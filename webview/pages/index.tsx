@@ -6,6 +6,8 @@ import MessengerWebviewAuth from '@machinat/messenger/webview/client';
 import TwitterWebviewAuth from '@machinat/twitter/webview/client';
 import TelegramWebviewAuth from '@machinat/telegram/webview/client';
 import LineWebviewAuth from '@machinat/line/webview/client';
+import { AlertProvider } from '../context/AlertContext';
+import App from '../App';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -60,23 +62,11 @@ const WebAppHome = () => {
       </Head>
 
       <main>
-        <h1>Hello In-Chat Webview!</h1>
-        <p>
-          Get started by editing <code>webview/pages/index.js</code>
-        </p>
-
-        <h3>{hello || 'connecting... '}</h3>
-        <p>
-          {isButtonTapped
-            ? 'Great! Check the chatroom 👍'
-            : client.isConnected
-            ? 'Tap a button 👇'
-            : ''}
-        </p>
-        <div>
-          <Button payload="Foo" />
-          <Button payload="Bar" />
-        </div>
+        <React.StrictMode>
+          <AlertProvider>
+            <App />
+          </AlertProvider>
+        </React.StrictMode>
       </main>
     </div>
   );
