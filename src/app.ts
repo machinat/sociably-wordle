@@ -17,6 +17,7 @@ import Dialogflow from '@machinat/dialogflow';
 import nextConfigs from '../webview/next.config.js';
 import useIntent from './services/useIntent';
 import useUserProfile from './services/useUserProfile';
+import useWordleGame from './services/useWordleGame';
 import recognitionData from './recognitionData';
 import * as scenes from './scenes';
 
@@ -151,7 +152,7 @@ const createApp = (options?: CreateAppOptions) => {
       }),
     ],
 
-    services: [useIntent, useUserProfile, TwitterAssetManager],
+    services: [useIntent, useUserProfile, useWordleGame, TwitterAssetManager],
   });
 };
 

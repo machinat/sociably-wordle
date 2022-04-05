@@ -1,7 +1,5 @@
-import { getGuessStatuses } from './statuses';
-import { solutionIndex, unicodeSplit } from './words';
-import { GAME_TITLE } from '../constants/strings';
-import { MAX_CHALLENGES } from '../constants/settings';
+import { GAME_TITLE } from '../strings';
+import { MAX_CHALLENGES, CharStatus } from '../../src/constants';
 import { UAParser } from 'ua-parser-js';
 
 const webShareApiDeviceTypes: string[] = ['mobile', 'smarttv', 'wearable'];
@@ -10,7 +8,8 @@ const browser = parser.getBrowser();
 const device = parser.getDevice();
 
 export const shareStatus = (
-  guesses: string[],
+  day: number,
+  results: CharStatus[][],
   lost: boolean,
   isHardMode: boolean,
   isDarkMode: boolean,
@@ -18,10 +17,10 @@ export const shareStatus = (
   handleShareToClipboard: () => void
 ) => {
   const textToShare =
-    `${GAME_TITLE} ${solutionIndex} ${
-      lost ? 'X' : guesses.length
-    }/${MAX_CHALLENGES}${isHardMode ? '*' : ''}\n\n` +
-    generateEmojiGrid(guesses, getEmojiTiles(isDarkMode, isHighContrastMode));
+    `${GAME_TITLE} ${day} ${lost ? 'X' : results.length}/${MAX_CHALLENGES}${
+      isHardMode ? '*' : ''
+    }\n\n` +
+    generateEmojiGrid(results, getEmojiTiles(isDarkMode, isHighContrastMode));
 
   const shareData = { text: textToShare };
 
@@ -42,18 +41,15 @@ export const shareStatus = (
   }
 };
 
-export const generateEmojiGrid = (guesses: string[], tiles: string[]) => {
-  return guesses
-    .map((guess) => {
-      const status = getGuessStatuses(guess);
-      const splitGuess = unicodeSplit(guess);
-
-      return splitGuess
-        .map((_, i) => {
-          switch (status[i]) {
-            case 'correct':
+export const generateEmojiGrid = (results: CharStatus[][], tiles: string[]) => {
+  return results
+    .map((statuses) => {
+      return statuses
+        .map((status) => {
+          switch (status) {
+            case CharStatus.Correct:
               return tiles[0];
-            case 'present':
+            case CharStatus.Present:
               return tiles[1];
             default:
               return tiles[2];

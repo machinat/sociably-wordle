@@ -1,3 +1,4 @@
+import { CharStatus } from '../../../src/constants';
 import { Cell } from '../grid/Cell';
 import { BaseModal } from './BaseModal';
 
@@ -19,7 +20,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
           isRevealing={true}
           isCompleted={true}
           value="W"
-          status="correct"
+          status={CharStatus.Correct}
         />
         <Cell value="E" />
         <Cell value="A" />
@@ -37,7 +38,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
           isRevealing={true}
           isCompleted={true}
           value="L"
-          status="present"
+          status={CharStatus.Present}
         />
         <Cell value="O" />
         <Cell value="T" />
@@ -50,7 +51,12 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
         <Cell value="V" />
         <Cell value="A" />
         <Cell value="G" />
-        <Cell isRevealing={true} isCompleted={true} value="U" status="absent" />
+        <Cell
+          isRevealing={true}
+          isCompleted={true}
+          value="U"
+          status={CharStatus.Absent}
+        />
         <Cell value="E" />
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">

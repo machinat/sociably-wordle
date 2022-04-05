@@ -7,4 +7,7 @@ module.exports = {
     telegramBotName: process.env.TELEGRAM_BOT_NAME,
     lineLiffId: process.env.LINE_LIFF_ID,
   },
+  experimental: {
+    externalDir: true,
+  },
 };

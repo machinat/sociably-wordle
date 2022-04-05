@@ -1,10 +1,11 @@
-import { MAX_CHALLENGES } from '../../constants/settings';
+import { MAX_CHALLENGES, CharStatus } from '../../../src/constants';
 import { CompletedRow } from './CompletedRow';
 import { CurrentRow } from './CurrentRow';
 import { EmptyRow } from './EmptyRow';
 
 type Props = {
   guesses: string[];
+  results: CharStatus[][];
   currentGuess: string;
   isRevealing?: boolean;
   currentRowClassName: string;
@@ -12,6 +13,7 @@ type Props = {
 
 export const Grid = ({
   guesses,
+  results,
   currentGuess,
   isRevealing,
   currentRowClassName,
@@ -25,6 +27,7 @@ export const Grid = ({
     <>
       {guesses.map((guess, i) => (
         <CompletedRow
+          result={results[i]}
           key={i}
           guess={guess}
           isRevealing={isRevealing && guesses.length - 1 === i}

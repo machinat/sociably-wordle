@@ -1,12 +1,8 @@
-import { WORDS } from '../constants/wordlist';
-import { VALID_GUESSES } from '../constants/validGuesses';
-import {
-  WRONG_SPOT_MESSAGE,
-  NOT_CONTAINED_MESSAGE,
-} from '../constants/strings';
-import { getGuessStatuses } from './statuses';
+import { CharStatus } from '../../src/constants';
+import VALID_GUESSES from '../../validGuesses.json';
+import WORDS from '../../wordlist.json';
+import { WRONG_SPOT_MESSAGE, NOT_CONTAINED_MESSAGE } from '../strings';
 import { default as GraphemeSplitter } from 'grapheme-splitter';
-
 export const isWordInWordList = (word: string) => {
   return (
     WORDS.includes(localeAwareLowerCase(word)) ||
@@ -14,29 +10,26 @@ export const isWordInWordList = (word: string) => {
   );
 };
 
-export const isWinningWord = (word: string) => {
-  return solution === word;
-};
-
 // build a set of previously revealed letters - present and correct
 // guess must use correct letters in that space and any other revealed letters
 // also check if all revealed instances of a letter are used (i.e. two C's)
-export const findFirstUnusedReveal = (word: string, guesses: string[]) => {
-  if (guesses.length === 0) {
-    return false;
-  }
-
+export const findFirstUnusedReveal = (
+  word: string,
+  lastGuess: string,
+  statuses: CharStatus[]
+) => {
   const lettersLeftArray = new Array<string>();
-  const guess = guesses[guesses.length - 1];
-  const statuses = getGuessStatuses(guess);
   const splitWord = unicodeSplit(word);
-  const splitGuess = unicodeSplit(guess);
+  const splitGuess = unicodeSplit(lastGuess);
 
   for (let i = 0; i < splitGuess.length; i++) {
-    if (statuses[i] === 'correct' || statuses[i] === 'present') {
+    if (
+      statuses[i] === CharStatus.Correct ||
+      statuses[i] === CharStatus.Present
+    ) {
       lettersLeftArray.push(splitGuess[i]);
     }
-    if (statuses[i] === 'correct' && splitWord[i] !== splitGuess[i]) {
+    if (statuses[i] === CharStatus.Correct && splitWord[i] !== splitGuess[i]) {
       return WRONG_SPOT_MESSAGE(splitGuess[i], i + 1);
     }
   }
@@ -77,19 +70,21 @@ export const localeAwareUpperCase = (text: string) => {
     : text.toUpperCase();
 };
 
-export const getWordOfDay = () => {
-  // January 1, 2022 Game Epoch
-  const epochMs = new Date(2022, 0).valueOf();
-  const now = Date.now();
-  const msInDay = 86400000;
-  const index = Math.floor((now - epochMs) / msInDay);
-  const nextday = (index + 1) * msInDay + epochMs;
+export const getKeyboradStatuses = (
+  guesses: string[],
+  results: CharStatus[][]
+): { [key: string]: CharStatus } => {
+  const charObj: { [key: string]: CharStatus } = {};
 
-  return {
-    solution: localeAwareUpperCase(WORDS[index % WORDS.length]),
-    solutionIndex: index,
-    tomorrow: nextday,
-  };
+  guesses.forEach((word, guessIdx) => {
+    unicodeSplit(word).forEach((letter, letterIdx) => {
+      const letterStatus = results[guessIdx][letterIdx];
+
+      if (charObj[letter] !== CharStatus.Correct) {
+        charObj[letter] = letterStatus;
+      }
+    });
+  });
+
+  return charObj;
 };
-
-export const { solution, solutionIndex, tomorrow } = getWordOfDay();

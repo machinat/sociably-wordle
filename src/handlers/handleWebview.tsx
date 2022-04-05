@@ -1,28 +1,57 @@
-import Machinat, { makeContainer, BasicBot } from '@machinat/core';
-import WithMenu from '../components/WithMenu';
-import { WebAppEventContext } from '../types';
+import { makeContainer } from '@machinat/core';
+import useWordleGame from '../services/useWordleGame';
+import { getGuessStatuses, getDayIndex } from '../utils';
+import { WebAppEventContext, GameData } from '../types';
+import { MAX_CHALLENGES } from '../constants';
 
-const handleWebview = makeContainer({ deps: [BasicBot] })(
-  (baseBot) => async (ctx: WebAppEventContext) => {
+const handleWebview = makeContainer({ deps: [useWordleGame] })(
+  (wordleGame) => async (ctx: WebAppEventContext) => {
     const {
       event,
-      bot: webviewBot,
+      bot,
       metadata: { auth },
     } = ctx;
 
     if (event.type === 'connect') {
-      // send hello when webview connection connect
-      await webviewBot.send(event.channel, {
-        category: 'greeting',
-        type: 'hello',
-        payload: `Hello, user from ${auth.platform}!`,
-      });
-    } else if (event.type === 'hello') {
-      // reflect hello to chatroom
-      await baseBot.render(
-        auth.channel,
-        <WithMenu>Hello {event.payload}!</WithMenu>
+      const [answer, { start, end, guesses, history }] = await wordleGame(
+        auth.channel
       );
+
+      const gameData: GameData = {
+        day: getDayIndex(start || Date.now()),
+        finishTime: start && end ? end - start : undefined,
+        results: guesses.map((guess) => getGuessStatuses(guess, answer)),
+        guesses,
+        history,
+      };
+
+      await bot.send(event.channel, {
+        category: 'game',
+        type: 'data',
+        payload: gameData,
+      });
+    } else if (event.type === 'guess') {
+      const { day, guess } = event.payload;
+      const [answer, { start, end, guesses, history }] = await wordleGame(
+        auth.channel,
+        day,
+        guess
+      );
+
+      const gameData: GameData = {
+        day,
+        guesses,
+        history,
+        finishTime: start && end ? end - start : undefined,
+        results: guesses.map((guess) => getGuessStatuses(guess, answer)),
+        answer: end || guesses.length === MAX_CHALLENGES ? answer : undefined,
+      };
+
+      await bot.send(event.channel, {
+        category: 'game',
+        type: 'guess_result',
+        payload: gameData,
+      });
     }
   }
 );

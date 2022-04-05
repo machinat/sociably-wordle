@@ -1,14 +1,15 @@
-import { getStatuses } from '../../utils/statuses';
 import { Key } from './Key';
 import { useEffect } from 'react';
-import { ENTER_TEXT, DELETE_TEXT } from '../../constants/strings';
-import { localeAwareUpperCase } from '../../utils/words';
+import { CharStatus } from '../../../src/constants';
+import { ENTER_TEXT, DELETE_TEXT } from '../../strings';
+import { localeAwareUpperCase, getKeyboradStatuses } from '../../utils/words';
 
 type Props = {
   onChar: (value: string) => void;
   onDelete: () => void;
   onEnter: () => void;
   guesses: string[];
+  results: CharStatus[][];
   isRevealing?: boolean;
 };
 
@@ -17,9 +18,10 @@ export const Keyboard = ({
   onDelete,
   onEnter,
   guesses,
+  results,
   isRevealing,
 }: Props) => {
-  const charStatuses = getStatuses(guesses);
+  const charStatuses = getKeyboradStatuses(guesses, results);
 
   const onClick = (value: string) => {
     if (value === 'ENTER') {

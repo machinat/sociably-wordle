@@ -1,9 +1,11 @@
+import React from 'react';
+import WebviewClient from '@machinat/webview/client';
 import { useState, useEffect } from 'react';
-import { Grid } from './components/grid/Grid';
-import { Keyboard } from './components/keyboard/Keyboard';
-import { InfoModal } from './components/modals/InfoModal';
-import { StatsModal } from './components/modals/StatsModal';
-import { SettingsModal } from './components/modals/SettingsModal';
+import { Grid } from '../components/grid/Grid';
+import { Keyboard } from '../components/keyboard/Keyboard';
+import { InfoModal } from '../components/modals/InfoModal';
+import { StatsModal } from '../components/modals/StatsModal';
+import { SettingsModal } from '../components/modals/SettingsModal';
 import {
   WIN_MESSAGES,
   GAME_COPIED_MESSAGE,
@@ -11,49 +13,79 @@ import {
   WORD_NOT_FOUND_MESSAGE,
   CORRECT_WORD_MESSAGE,
   HARD_MODE_ALERT_MESSAGE,
-} from './constants/strings';
+} from '../strings';
 import {
   MAX_WORD_LENGTH,
   MAX_CHALLENGES,
   REVEAL_TIME_MS,
   GAME_LOST_INFO_DELAY,
-  WELCOME_INFO_MODAL_MS,
-} from './constants/settings';
+} from '../../src/constants';
+import type { GameData } from '../../src/types';
 import {
   isWordInWordList,
-  isWinningWord,
-  solution,
   findFirstUnusedReveal,
   unicodeLength,
-} from './utils/words';
-import { addStatsForCompletedGame, loadStats } from './utils/stats';
+} from '../utils/words';
 import {
-  loadGameStateFromLocalStorage,
-  saveGameStateToLocalStorage,
   setStoredIsHighContrastMode,
   getStoredIsHighContrastMode,
-} from './utils/localStorage';
+} from '../utils/localStorage';
+
 import { default as GraphemeSplitter } from 'grapheme-splitter';
 
-import { AlertContainer } from './components/alerts/AlertContainer';
-import { useAlert } from './context/AlertContext';
-import { Navbar } from './components/navbar/Navbar';
+import { AlertContainer } from '../components/alerts/AlertContainer';
+import { useAlert } from '../context/AlertContext';
+import { Navbar } from '../components/navbar/Navbar';
 
-function App() {
+type AppProps = {
+  data: GameData | null;
+  client: WebviewClient<any, any>;
+};
+
+const App = ({ data, client }: AppProps) => {
+  const [isGameWon, setIsGameWon] = useState(false);
+  const [isGameLost, setIsGameLost] = useState(false);
+  const [isWaitingResult, setIsWaitingResult] = useState(false);
+  const { showError: showErrorAlert, showSuccess: showSuccessAlert } =
+    useAlert();
+
+  useEffect(() => {
+    if (isWaitingResult) {
+      setIsWaitingResult(false);
+      setCurrentGuess('');
+      setIsRevealing(true);
+      // turn this back off after all
+      // chars have been revealed
+      setTimeout(() => {
+        setIsRevealing(false);
+      }, REVEAL_TIME_MS * MAX_WORD_LENGTH);
+    }
+    if (data?.finishTime) {
+      setIsGameWon(true);
+    } else if (data?.guesses.length === MAX_CHALLENGES) {
+      setIsGameLost(true);
+      if (data.answer) {
+        showErrorAlert(CORRECT_WORD_MESSAGE(data.answer), {
+          persist: true,
+          delayMs: REVEAL_TIME_MS * MAX_WORD_LENGTH + 1,
+        });
+      }
+    }
+  }, [data]);
+
+  const guesses = data?.guesses || [];
+  const results = data?.results || [];
+
   const prefersDarkMode =
     typeof window !== 'undefined'
       ? window.matchMedia('(prefers-color-scheme: dark)').matches
       : null;
 
-  const { showError: showErrorAlert, showSuccess: showSuccessAlert } =
-    useAlert();
   const [currentGuess, setCurrentGuess] = useState('');
-  const [isGameWon, setIsGameWon] = useState(false);
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [currentRowClass, setCurrentRowClass] = useState('');
-  const [isGameLost, setIsGameLost] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(
     typeof window === 'undefined'
       ? !!prefersDarkMode
@@ -65,26 +97,6 @@ function App() {
     getStoredIsHighContrastMode()
   );
   const [isRevealing, setIsRevealing] = useState(false);
-  const [guesses, setGuesses] = useState<string[]>(() => {
-    const loaded = loadGameStateFromLocalStorage();
-    if (loaded?.solution !== solution) {
-      return [];
-    }
-    const gameWasWon = loaded.guesses.includes(solution);
-    if (gameWasWon) {
-      setIsGameWon(true);
-    }
-    if (loaded.guesses.length === MAX_CHALLENGES && !gameWasWon) {
-      setIsGameLost(true);
-      showErrorAlert(CORRECT_WORD_MESSAGE(solution), {
-        persist: true,
-      });
-    }
-    return loaded.guesses;
-  });
-
-  const [stats, setStats] = useState(() => loadStats());
-
   const [isHardMode, setIsHardMode] = useState(
     typeof window === 'undefined'
       ? false
@@ -92,16 +104,6 @@ function App() {
       ? localStorage.getItem('gameMode') === 'hard'
       : false
   );
-
-  useEffect(() => {
-    // if no game state on load,
-    // show the user the how-to info modal
-    if (!loadGameStateFromLocalStorage()) {
-      setTimeout(() => {
-        setIsInfoModalOpen(true);
-      }, WELCOME_INFO_MODAL_MS);
-    }
-  }, []);
 
   useEffect(() => {
     if (isDarkMode) {
@@ -139,10 +141,6 @@ function App() {
   const clearCurrentRowClass = () => {
     setCurrentRowClass('');
   };
-
-  useEffect(() => {
-    saveGameStateToLocalStorage({ guesses, solution });
-  }, [guesses]);
 
   useEffect(() => {
     if (isGameWon) {
@@ -199,8 +197,12 @@ function App() {
     }
 
     // enforce hard mode - all guesses must contain all previously revealed letters
-    if (isHardMode) {
-      const firstMissingReveal = findFirstUnusedReveal(currentGuess, guesses);
+    if (isHardMode && guesses.length > 0) {
+      const firstMissingReveal = findFirstUnusedReveal(
+        currentGuess,
+        guesses[guesses.length - 1],
+        results[results.length - 1]
+      );
       if (firstMissingReveal) {
         setCurrentRowClass('jiggle');
         return showErrorAlert(firstMissingReveal, {
@@ -209,36 +211,21 @@ function App() {
       }
     }
 
-    setIsRevealing(true);
-    // turn this back off after all
-    // chars have been revealed
-    setTimeout(() => {
-      setIsRevealing(false);
-    }, REVEAL_TIME_MS * MAX_WORD_LENGTH);
-
-    const winningWord = isWinningWord(currentGuess);
-
     if (
+      data &&
       unicodeLength(currentGuess) === MAX_WORD_LENGTH &&
       guesses.length < MAX_CHALLENGES &&
       !isGameWon
     ) {
-      setGuesses([...guesses, currentGuess]);
-      setCurrentGuess('');
-
-      if (winningWord) {
-        setStats(addStatsForCompletedGame(stats, guesses.length));
-        return setIsGameWon(true);
-      }
-
-      if (guesses.length === MAX_CHALLENGES - 1) {
-        setStats(addStatsForCompletedGame(stats, guesses.length + 1));
-        setIsGameLost(true);
-        showErrorAlert(CORRECT_WORD_MESSAGE(solution), {
-          persist: true,
-          delayMs: REVEAL_TIME_MS * MAX_WORD_LENGTH + 1,
-        });
-      }
+      client.send({
+        category: 'game',
+        type: 'guess',
+        payload: {
+          day: data.day,
+          guess: currentGuess,
+        },
+      });
+      setIsWaitingResult(true);
     }
   };
 
@@ -253,6 +240,7 @@ function App() {
         <div className="pb-6 grow">
           <Grid
             guesses={guesses}
+            results={results}
             currentGuess={currentGuess}
             isRevealing={isRevealing}
             currentRowClassName={currentRowClass}
@@ -263,6 +251,7 @@ function App() {
           onDelete={onDelete}
           onEnter={onEnter}
           guesses={guesses}
+          results={results}
           isRevealing={isRevealing}
         />
         <InfoModal
@@ -270,10 +259,11 @@ function App() {
           handleClose={() => setIsInfoModalOpen(false)}
         />
         <StatsModal
+          day={data?.day || 0}
           isOpen={isStatsModalOpen}
           handleClose={() => setIsStatsModalOpen(false)}
-          guesses={guesses}
-          gameStats={stats}
+          results={results}
+          history={data?.history || null}
           isGameLost={isGameLost}
           isGameWon={isGameWon}
           handleShareToClipboard={() => showSuccessAlert(GAME_COPIED_MESSAGE)}
@@ -296,6 +286,6 @@ function App() {
       </div>
     </div>
   );
-}
+};
 
 export default App;

@@ -3,7 +3,7 @@ import { SettingsToggle } from './SettingsToggle';
 import {
   HARD_MODE_DESCRIPTION,
   HIGH_CONTRAST_MODE_DESCRIPTION,
-} from '../../constants/strings';
+} from '../../strings';
 
 type Props = {
   isOpen: boolean;

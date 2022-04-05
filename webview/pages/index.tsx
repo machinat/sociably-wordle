@@ -7,7 +7,8 @@ import TwitterWebviewAuth from '@machinat/twitter/webview/client';
 import TelegramWebviewAuth from '@machinat/telegram/webview/client';
 import LineWebviewAuth from '@machinat/line/webview/client';
 import { AlertProvider } from '../context/AlertContext';
-import App from '../App';
+import App from '../components/App';
+import type { GameData } from '../../src/types';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -30,45 +31,29 @@ const client = new WebviewClient({
 });
 
 const WebAppHome = () => {
-  const [isButtonTapped, setButtonTapped] = React.useState(false);
-  const { hello } = useEventReducer(
+  const data = useEventReducer<null | GameData>(
     client,
-    (data: { hello?: string }, { event }): { hello?: string } => {
-      if (event.type === 'hello') {
-        return { hello: event.payload };
+    (currentData, { event }) => {
+      console.log(event);
+      if (event.type === 'data' || event.type === 'guess_result') {
+        const newData = event.payload;
+        return newData;
       }
-      return data;
+      return currentData;
     },
-    { hello: undefined }
-  );
-
-  const Button = ({ payload }) => (
-    <button
-      disabled={!client.isConnected}
-      onClick={() => {
-        client.send({ category: 'greeting', type: 'hello', payload });
-        client.closeWebview();
-        setButtonTapped(true);
-      }}
-    >
-      {payload}
-    </button>
+    null
   );
 
   return (
-    <div>
+    <React.StrictMode>
       <Head>
         <title>Machinat Webview</title>
       </Head>
 
-      <main>
-        <React.StrictMode>
-          <AlertProvider>
-            <App />
-          </AlertProvider>
-        </React.StrictMode>
-      </main>
-    </div>
+      <AlertProvider>
+        <App client={client} data={data} />
+      </AlertProvider>
+    </React.StrictMode>
   );
 };
 

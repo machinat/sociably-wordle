@@ -13,6 +13,10 @@
   --present-cell-bg-color: theme('colors.yellow.400');
 }
 
+html.dark {
+  background-color: rgb(15, 23, 42);
+}
+
 .dark {
   --default-cell-bg-color: theme('colors.slate.900');
   --default-cell-border-color: theme('colors.white');
