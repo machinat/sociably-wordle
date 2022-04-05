@@ -1,10 +1,7 @@
 import { ReactNode } from 'react';
 import classnames from 'classnames';
-import {
-  MAX_WORD_LENGTH,
-  REVEAL_TIME_MS,
-  CharStatus,
-} from '../../../src/constants';
+import { CharStatus } from '../../../src/constants';
+import { MAX_WORD_LENGTH, REVEAL_TIME_MS } from '../../settings';
 import { getStoredIsHighContrastMode } from '../../utils/localStorage';
 
 type Props = {

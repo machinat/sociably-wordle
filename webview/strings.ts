@@ -1,4 +1,5 @@
-export const GAME_TITLE = process.env.REACT_APP_GAME_NAME!;
+export const GAME_TITLE = process.env.NEXT_PUBLIC_APP_NAME!;
+export const AGNET_TAG_NAME = process.env.NEXT_PUBLIC_AGNET_TAG_NAME!;
 
 export const WIN_MESSAGES = ['Great Job!', 'Awesome', 'Well done!'];
 export const GAME_COPIED_MESSAGE = 'Game copied to clipboard';

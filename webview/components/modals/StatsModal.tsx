@@ -15,6 +15,7 @@ import {
 
 type Props = {
   day: number;
+  finishTime: number;
   isOpen: boolean;
   handleClose: () => void;
   results: CharStatus[][];
@@ -30,6 +31,7 @@ type Props = {
 
 export const StatsModal = ({
   day,
+  finishTime,
   isOpen,
   handleClose,
   results,
@@ -94,6 +96,7 @@ export const StatsModal = ({
             onClick={() => {
               shareStatus(
                 day,
+                finishTime,
                 results,
                 isGameLost,
                 isHardMode,

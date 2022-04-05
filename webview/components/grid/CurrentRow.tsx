@@ -1,4 +1,4 @@
-import { MAX_WORD_LENGTH } from '../../../src/constants';
+import { MAX_WORD_LENGTH } from '../../settings';
 import { Cell } from './Cell';
 import { unicodeSplit } from '../../utils/words';
 

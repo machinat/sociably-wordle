@@ -22,6 +22,7 @@ import recognitionData from './recognitionData';
 import * as scenes from './scenes';
 
 const {
+  APP_NAME,
   NODE_ENV,
   PORT,
   DOMAIN,
@@ -146,7 +147,7 @@ const createApp = (options?: CreateAppOptions) => {
           conf: nextConfigs,
         },
         basicAuth: {
-          appName: 'Social Media Play Wordle',
+          appName: APP_NAME,
           appImageUrl: 'https://machinat.com/img/logo.jpg',
         },
       }),

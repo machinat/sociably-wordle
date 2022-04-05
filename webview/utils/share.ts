@@ -1,5 +1,6 @@
-import { GAME_TITLE } from '../strings';
-import { MAX_CHALLENGES, CharStatus } from '../../src/constants';
+import { CharStatus } from '../../src/constants';
+import { MAX_CHALLENGES } from '../settings';
+import { AGNET_TAG_NAME } from '../strings';
 import { UAParser } from 'ua-parser-js';
 
 const webShareApiDeviceTypes: string[] = ['mobile', 'smarttv', 'wearable'];
@@ -9,6 +10,7 @@ const device = parser.getDevice();
 
 export const shareStatus = (
   day: number,
+  finishTime: number,
   results: CharStatus[][],
   lost: boolean,
   isHardMode: boolean,
@@ -16,11 +18,11 @@ export const shareStatus = (
   isHighContrastMode: boolean,
   handleShareToClipboard: () => void
 ) => {
-  const textToShare =
-    `${GAME_TITLE} ${day} ${lost ? 'X' : results.length}/${MAX_CHALLENGES}${
-      isHardMode ? '*' : ''
-    }\n\n` +
-    generateEmojiGrid(results, getEmojiTiles(isDarkMode, isHighContrastMode));
+  const textToShare = `@${AGNET_TAG_NAME}
+#${day}   ${Math.round(finishTime / 60000)}:${
+    Math.round(finishTime / 1000) % 60
+  }   ${lost ? 'X' : results.length}/${MAX_CHALLENGES}${isHardMode ? '*' : ''}
+${generateEmojiGrid(results, getEmojiTiles(isDarkMode, isHighContrastMode))}`;
 
   const shareData = { text: textToShare };
 

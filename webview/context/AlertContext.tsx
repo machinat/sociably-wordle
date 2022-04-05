@@ -5,7 +5,7 @@ import {
   useContext,
   useState,
 } from 'react';
-import { ALERT_TIME_MS } from '../../src/constants';
+import { ALERT_TIME_MS } from '../settings';
 
 type AlertStatus = 'success' | 'error' | undefined;
 

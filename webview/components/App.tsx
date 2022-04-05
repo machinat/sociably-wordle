@@ -19,7 +19,7 @@ import {
   MAX_CHALLENGES,
   REVEAL_TIME_MS,
   GAME_LOST_INFO_DELAY,
-} from '../../src/constants';
+} from '../settings';
 import type { GameData } from '../../src/types';
 import {
   isWordInWordList,
@@ -64,7 +64,7 @@ const App = ({ data, client }: AppProps) => {
       setIsGameWon(true);
     } else if (data?.guesses.length === MAX_CHALLENGES) {
       setIsGameLost(true);
-      if (data.answer) {
+      if (data?.answer) {
         showErrorAlert(CORRECT_WORD_MESSAGE(data.answer), {
           persist: true,
           delayMs: REVEAL_TIME_MS * MAX_WORD_LENGTH + 1,
@@ -260,6 +260,7 @@ const App = ({ data, client }: AppProps) => {
         />
         <StatsModal
           day={data?.day || 0}
+          finishTime={data?.finishTime || 0}
           isOpen={isStatsModalOpen}
           handleClose={() => setIsStatsModalOpen(false)}
           results={results}

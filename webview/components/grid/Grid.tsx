@@ -1,4 +1,5 @@
-import { MAX_CHALLENGES, CharStatus } from '../../../src/constants';
+import { CharStatus } from '../../../src/constants';
+import { MAX_CHALLENGES } from '../../settings';
 import { CompletedRow } from './CompletedRow';
 import { CurrentRow } from './CurrentRow';
 import { EmptyRow } from './EmptyRow';
