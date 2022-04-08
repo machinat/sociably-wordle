@@ -1,14 +1,14 @@
 import Machinat from '@machinat/core';
 import Http from '@machinat/http';
 import Messenger from '@machinat/messenger';
-import MessengerWebviewAuth from '@machinat/messenger/webview';
+import MessengerAuth from '@machinat/messenger/webview';
 import Line from '@machinat/line';
-import LineWebviewAuth from '@machinat/line/webview';
+import LineAuth from '@machinat/line/webview';
 import Twitter from '@machinat/twitter';
 import TwitterAssetManager from '@machinat/twitter/asset';
-import TwitterWebviewAuth from '@machinat/twitter/webview';
+import TwitterAuth from '@machinat/twitter/webview';
 import Telegram from '@machinat/telegram';
-import TelegramWebviewAuth from '@machinat/telegram/webview';
+import TelegramAuth from '@machinat/telegram/webview';
 import Webview from '@machinat/webview';
 import Script from '@machinat/script';
 import RedisState from '@machinat/redis-state';
@@ -22,6 +22,7 @@ import recognitionData from './recognitionData';
 import * as scenes from './scenes';
 
 const {
+  // basic
   APP_NAME,
   NODE_ENV,
   PORT,
@@ -84,6 +85,7 @@ const createApp = (options?: CreateAppOptions) => {
 
       Dialogflow.initModule({
         recognitionData,
+        environment: `wordle-machina-${DEV ? 'dev' : 'prod'}`,
         projectId: DIALOGFLOW_PROJECT_ID,
       }),
 
@@ -127,30 +129,26 @@ const createApp = (options?: CreateAppOptions) => {
         liffId: LINE_LIFF_ID,
       }),
 
-      Webview.initModule<
-        MessengerWebviewAuth | TelegramWebviewAuth | LineWebviewAuth
-      >({
-        webviewHost: DOMAIN,
-        webviewPath: '/webview',
-        authSecret: WEBVIEW_AUTH_SECRET,
-        authPlatforms: [
-          MessengerWebviewAuth,
-          TwitterWebviewAuth,
-          TelegramWebviewAuth,
-          LineWebviewAuth,
-        ],
-        cookieSameSite: 'none',
-        noNextServer: options?.noServer,
-        nextServerOptions: {
-          dev: DEV,
-          dir: './webview',
-          conf: nextConfigs,
-        },
-        basicAuth: {
-          appName: APP_NAME,
-          appImageUrl: 'https://machinat.com/img/logo.jpg',
-        },
-      }),
+      Webview.initModule<MessengerAuth | TwitterAuth | TelegramAuth | LineAuth>(
+        {
+          webviewHost: DOMAIN,
+          webviewPath: '/webview',
+          authSecret: WEBVIEW_AUTH_SECRET,
+          authPlatforms: [MessengerAuth, TwitterAuth, TelegramAuth, LineAuth],
+          cookieSameSite: 'none',
+          noNextServer: options?.noServer,
+          nextServerOptions: {
+            dev: DEV,
+            dir: './webview',
+            conf: nextConfigs,
+          },
+          basicAuth: {
+            mode: 'loose',
+            appName: APP_NAME,
+            appIconUrl: 'https://machinat.com/img/logo.jpg',
+          },
+        }
+      ),
     ],
 
     services: [useIntent, useUserProfile, useWordleGame, TwitterAssetManager],

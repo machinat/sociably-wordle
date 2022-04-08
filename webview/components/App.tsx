@@ -1,4 +1,5 @@
 import React from 'react';
+import { default as GraphemeSplitter } from 'grapheme-splitter';
 import WebviewClient from '@machinat/webview/client';
 import { useState, useEffect } from 'react';
 import { Grid } from '../components/grid/Grid';
@@ -30,9 +31,6 @@ import {
   setStoredIsHighContrastMode,
   getStoredIsHighContrastMode,
 } from '../utils/localStorage';
-
-import { default as GraphemeSplitter } from 'grapheme-splitter';
-
 import { AlertContainer } from '../components/alerts/AlertContainer';
 import { useAlert } from '../context/AlertContext';
 import { Navbar } from '../components/navbar/Navbar';
