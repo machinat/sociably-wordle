@@ -1,11 +1,12 @@
-import { makeContainer } from '@machinat/core';
-import useWordleGame from '../services/useWordleGame';
+import Machinat, { makeContainer, BasicBot } from '@machinat/core';
+import useWordleState from '../services/useWordleState';
+import GameSummary from '../components/GameSummary';
 import { getGuessStatuses, getDayIndex } from '../utils';
 import { WebAppEventContext, GameData } from '../types';
 import { MAX_CHALLENGES } from '../constants';
 
-const handleWebview = makeContainer({ deps: [useWordleGame] })(
-  (wordleGame) => async (ctx: WebAppEventContext) => {
+const handleWebview = makeContainer({ deps: [useWordleState, BasicBot] })(
+  (wordleGame, basicBot) => async (ctx: WebAppEventContext) => {
     const {
       event,
       bot,
@@ -13,7 +14,7 @@ const handleWebview = makeContainer({ deps: [useWordleGame] })(
     } = ctx;
 
     if (event.type === 'connect') {
-      const [answer, { start, end, guesses, history }] = await wordleGame(
+      const [answer, { start, end, guesses, stats }] = await wordleGame(
         auth.channel
       );
 
@@ -22,7 +23,7 @@ const handleWebview = makeContainer({ deps: [useWordleGame] })(
         finishTime: start && end ? end - start : undefined,
         results: guesses.map((guess) => getGuessStatuses(guess, answer)),
         guesses,
-        history,
+        stats,
       };
 
       await bot.send(event.channel, {
@@ -32,19 +33,21 @@ const handleWebview = makeContainer({ deps: [useWordleGame] })(
       });
     } else if (event.type === 'guess') {
       const { day, guess } = event.payload;
-      const [answer, { start, end, guesses, history }] = await wordleGame(
+      const [answer, { start, end, guesses, stats }] = await wordleGame(
         auth.channel,
         day,
         guess
       );
 
+      const isFinished = end || guesses.length === MAX_CHALLENGES;
+      const finishTime = start && end ? end - start : undefined;
       const gameData: GameData = {
         day,
         guesses,
-        history,
-        finishTime: start && end ? end - start : undefined,
+        stats,
+        finishTime,
         results: guesses.map((guess) => getGuessStatuses(guess, answer)),
-        answer: end || guesses.length === MAX_CHALLENGES ? answer : undefined,
+        answer: isFinished ? answer : undefined,
       };
 
       await bot.send(event.channel, {
@@ -52,6 +55,17 @@ const handleWebview = makeContainer({ deps: [useWordleGame] })(
         type: 'guess_result',
         payload: gameData,
       });
+
+      if (isFinished) {
+        await basicBot.render(
+          auth.channel,
+          <GameSummary
+            answer={answer}
+            finishTime={finishTime}
+            guesses={guesses}
+          />
+        );
+      }
     }
   }
 );

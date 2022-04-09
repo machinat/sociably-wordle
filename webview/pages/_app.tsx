@@ -20,7 +20,7 @@ const {
   },
 } = getConfig();
 
-const WrodleApp = ({ Component, pageProps }) => {
+const WordleApp = ({ Component, pageProps }) => {
   const client = useClient({
     mockupMode: typeof window === 'undefined',
     authPlatforms: [
@@ -57,9 +57,9 @@ const WrodleApp = ({ Component, pageProps }) => {
 };
 
 // to activate publicRuntimeConfig
-WrodleApp.getInitialProps = async (appContext) => {
+WordleApp.getInitialProps = async (appContext) => {
   const appProps = await App.getInitialProps(appContext);
   return { ...appProps };
 };
 
-export default WrodleApp;
+export default WordleApp;

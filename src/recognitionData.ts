@@ -68,5 +68,32 @@ export default {
         ],
       },
     },
+
+    share: {
+      trainingPhrases: {
+        en: [
+          'share',
+          'game play',
+          'share record',
+          'share game',
+          'my game today',
+          'share game play',
+        ],
+      },
+    },
+
+    stats: {
+      trainingPhrases: {
+        en: [
+          'statistics',
+          'stats',
+          'history',
+          'records',
+          'my records',
+          'data',
+          'past statistics',
+        ],
+      },
+    },
   },
 };

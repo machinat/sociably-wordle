@@ -9,7 +9,7 @@ import { GameState } from '../types';
 
 const WORDLE_STATE_KEY = 'game_data';
 
-const useWordleGame =
+const useWordleState =
   (stateController: StateController) =>
   async (
     channel: MachinatChannel,
@@ -23,59 +23,56 @@ const useWordleGame =
     const state = await stateController.channelState(channel).update<GameState>(
       WORDLE_STATE_KEY,
       (
-        currentState = {
+        state = {
           guesses: [],
-          history: {
+          stats: {
             totalWinTime: 0,
             failCount: 0,
+            bestStreak: 0,
+            currentStreak: 0,
             winCounts: new Array(MAX_CHALLENGES).fill(0),
           },
         }
       ) => {
-        const lastGameDay = currentState.start
-          ? getDayIndex(currentState.start)
-          : undefined;
+        const lastGameDay = state.start ? getDayIndex(state.start) : undefined;
 
         if (!guess) {
           if (lastGameDay !== today) {
             return {
               guesses: [],
-              history: currentState.history,
+              stats: state.stats,
             };
           }
-          return currentState;
+          return state;
         }
 
         const isNewGame = lastGameDay !== today && guessDay === today;
-        const guesses = isNewGame ? [] : currentState.guesses;
-        const start = isNewGame ? now : currentState.start || now;
-        if (guesses.length >= MAX_CHALLENGES) {
-          return {
-            ...currentState,
-            stat: {
-              ...currentState.history,
-              failCount: currentState.history.failCount + 1,
-            },
-          };
+        const start = isNewGame ? now : state.start || now;
+        const guesses = isNewGame ? [] : state.guesses;
+        if (guesses.length >= MAX_CHALLENGES || (!isNewGame && state.end)) {
+          return state;
         }
 
-        const isFinished = guess === answer;
-        const newGuesses = [...guesses, guess];
-        const winCounts = [...currentState.history.winCounts];
-        if (isFinished) {
-          winCounts[newGuesses.length - 1] += 1;
+        const isWinned = guess === answer;
+        const guessCount = guesses.length + 1;
+        const isLosed = guessCount === MAX_CHALLENGES;
+
+        const stats = { ...state.stats };
+        if (isWinned) {
+          stats.winCounts[guessCount - 1] += 1;
+          stats.currentStreak += 1;
+          stats.bestStreak = Math.max(stats.currentStreak, stats.bestStreak);
+          stats.totalWinTime = state.stats.totalWinTime + now - start;
+        } else if (isLosed) {
+          stats.currentStreak = 0;
+          stats.failCount + 1;
         }
+
         return {
           start,
-          end: isFinished ? now : undefined,
-          guesses: newGuesses,
-          history: isFinished
-            ? {
-                ...currentState.history,
-                winCounts,
-                totalWinTime: currentState.history.totalWinTime + now - start,
-              }
-            : currentState.history,
+          end: isWinned ? now : undefined,
+          guesses: [...guesses, guess],
+          stats,
         };
       }
     );
@@ -85,4 +82,4 @@ const useWordleGame =
 
 export default makeFactoryProvider({
   deps: [StateController],
-})(useWordleGame);
+})(useWordleState);

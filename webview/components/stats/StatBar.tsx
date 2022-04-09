@@ -1,4 +1,4 @@
-import { GameStats } from '../../utils/stats';
+import { GameStats } from '../../../src/types';
 import {
   TOTAL_TRIES_TEXT,
   SUCCESS_RATE_TEXT,
@@ -26,10 +26,18 @@ const StatItem = ({
 };
 
 export const StatBar = ({ gameStats }: Props) => {
+  const winnedGames = gameStats.winCounts.reduce((sum, c) => sum + c, 0);
+  const totalGames = winnedGames + gameStats.failCount;
+
   return (
     <div className="flex justify-center my-2">
-      <StatItem label={TOTAL_TRIES_TEXT} value={gameStats.totalGames} />
-      <StatItem label={SUCCESS_RATE_TEXT} value={`${gameStats.successRate}%`} />
+      <StatItem label={TOTAL_TRIES_TEXT} value={totalGames} />
+      <StatItem
+        label={SUCCESS_RATE_TEXT}
+        value={`${
+          totalGames !== 0 ? ((winnedGames / totalGames) * 100).toFixed() : 0
+        }%`}
+      />
       <StatItem label={CURRENT_STREAK_TEXT} value={gameStats.currentStreak} />
       <StatItem label={BEST_STREAK_TEXT} value={gameStats.bestStreak} />
     </div>

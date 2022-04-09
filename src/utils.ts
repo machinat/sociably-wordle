@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
-import { CharStatus } from './constants';
 import { default as GraphemeSplitter } from 'grapheme-splitter';
+import { AGNET_TAG_NAME, MAX_CHALLENGES, CharStatus } from './constants';
 
 export const unicodeSplit = (word: string) => {
   return new GraphemeSplitter().splitGraphemes(word);
@@ -73,4 +73,12 @@ export const getGuessStatuses = (
   });
 
   return statuses;
+};
+
+export const formatTime = (time: number) => {
+  if (time === 0) {
+    return '0:00';
+  }
+  const sec = Math.round(time / 1000) % 60;
+  return `${Math.round(time / 60000)}:${sec < 10 ? `0${sec}` : sec}`;
 };

@@ -1,10 +1,10 @@
 import Countdown from 'react-countdown';
 import { CharStatus } from '../../../src/constants';
-import { GameHistory } from '../../../src/types';
+import { GameStats } from '../../../src/types';
 import { StatBar } from '../stats/StatBar';
 import { Histogram } from '../stats/Histogram';
 import { shareStatus } from '../../utils/share';
-import { getDayBegin, getStatsFromHistory } from '../../utils/stats';
+import { getDayBegin } from '../../utils/stats';
 import { BaseModal } from './BaseModal';
 import {
   STATISTICS_TITLE,
@@ -15,11 +15,10 @@ import {
 
 type Props = {
   day: number;
-  finishTime: number;
+  finishTime: undefined | number;
   isOpen: boolean;
   handleClose: () => void;
   results: CharStatus[][];
-  history: null | GameHistory;
   isGameLost: boolean;
   isGameWon: boolean;
   handleShareToClipboard: () => void;
@@ -27,6 +26,7 @@ type Props = {
   isDarkMode: boolean;
   isHighContrastMode: boolean;
   numberOfGuessesMade: number;
+  gameStats?: GameStats;
 };
 
 export const StatsModal = ({
@@ -35,7 +35,6 @@ export const StatsModal = ({
   isOpen,
   handleClose,
   results,
-  history,
   isGameLost,
   isGameWon,
   handleShareToClipboard,
@@ -43,18 +42,18 @@ export const StatsModal = ({
   isDarkMode,
   isHighContrastMode,
   numberOfGuessesMade,
+  gameStats = {
+    winCounts: [],
+    failCount: 0,
+    currentStreak: 0,
+    bestStreak: 0,
+    totalWinTime: 0,
+  },
 }: Props) => {
-  const gameStats = history
-    ? getStatsFromHistory(history, results.length)
-    : {
-        winDistribution: [],
-        gamesFailed: 0,
-        currentStreak: 0,
-        bestStreak: 0,
-        totalGames: 0,
-        successRate: 0,
-      };
-  if (gameStats.totalGames <= 0) {
+  const winnedGames = gameStats.winCounts.reduce((sum, c) => sum + c, 0);
+  const totalGames = winnedGames + gameStats.failCount;
+
+  if (totalGames <= 0) {
     return (
       <BaseModal
         title={STATISTICS_TITLE}

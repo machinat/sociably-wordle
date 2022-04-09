@@ -10,20 +10,26 @@ import { WebviewAction as LineWebviewAction } from '@machinat/line/webview';
 
 type WithMenuProps = {
   children: MachinatNode;
+  gameFinished?: boolean;
 };
 
-const WithMenu = ({ children }: WithMenuProps, { platform }) => {
-  const webviewText = 'Open Webview ↗️';
-  const aboutText = 'About ℹ';
-  const aboutData = JSON.stringify({ action: 'about' });
+const WithMenu = ({ children, gameFinished }: WithMenuProps, { platform }) => {
+  const gameText = gameFinished ? 'Check 🔤' : 'Play 🔤';
+  const shareText = 'Share 📤';
+  const shareData = JSON.stringify({ action: 'share' });
+  const statsText = 'Statistics 📊';
+  const statsData = JSON.stringify({ action: 'stats' });
 
   if (platform === 'messenger') {
     return (
       <Messenger.ButtonTemplate
         buttons={
           <>
-            <Messenger.PostbackButton title={aboutText} payload={aboutData} />
-            <MessengerWebviewButton title={webviewText} />
+            <Messenger.PostbackButton title={statsText} payload={statsData} />
+            {gameFinished && (
+              <Messenger.PostbackButton title={shareText} payload={shareData} />
+            )}
+            <MessengerWebviewButton title={gameText} />
           </>
         }
       >
@@ -35,9 +41,14 @@ const WithMenu = ({ children }: WithMenuProps, { platform }) => {
   if (platform === 'twitter') {
     return (
       <Twitter.DirectMessage
-        buttons={<TwitterWebviewButton label={webviewText} />}
+        buttons={<TwitterWebviewButton label={gameText} />}
         quickReplies={
-          <Twitter.QuickReply label={aboutText} metadata={aboutData} />
+          <>
+            <Twitter.QuickReply label={statsText} metadata={statsData} />
+            {gameFinished && (
+              <Twitter.QuickReply label={shareText} metadata={shareData} />
+            )}
+          </>
         }
       >
         {children}
@@ -50,8 +61,11 @@ const WithMenu = ({ children }: WithMenuProps, { platform }) => {
       <Telegram.Text
         replyMarkup={
           <Telegram.InlineKeyboard>
-            <Telegram.CallbackButton text={aboutText} data={aboutData} />
-            <TelegramWebviewButton text={webviewText} />
+            <Telegram.CallbackButton text={statsText} data={statsData} />
+            {gameFinished && (
+              <Telegram.CallbackButton text={shareText} data={shareData} />
+            )}
+            <TelegramWebviewButton text={gameText} />
           </Telegram.InlineKeyboard>
         }
       >
@@ -67,11 +81,18 @@ const WithMenu = ({ children }: WithMenuProps, { platform }) => {
         actions={
           <>
             <Line.PostbackAction
-              label={aboutText}
-              displayText={aboutText}
-              data={aboutData}
+              label={statsText}
+              displayText={statsText}
+              data={statsData}
             />
-            <LineWebviewAction label={webviewText} />
+            {gameFinished && (
+              <Line.PostbackAction
+                label={shareText}
+                displayText={shareText}
+                data={shareData}
+              />
+            )}
+            <LineWebviewAction label={gameText} />
           </>
         }
       >

@@ -10,7 +10,7 @@ const device = parser.getDevice();
 
 export const shareStatus = (
   day: number,
-  finishTime: number,
+  finishTime: undefined | number,
   results: CharStatus[][],
   lost: boolean,
   isHardMode: boolean,
@@ -18,10 +18,15 @@ export const shareStatus = (
   isHighContrastMode: boolean,
   handleShareToClipboard: () => void
 ) => {
+  const time = finishTime
+    ? `  ${Math.round(finishTime / 60000)}:${
+        Math.round(finishTime / 1000) % 60
+      }`
+    : '';
   const textToShare = `@${AGNET_TAG_NAME}
-#${day}   ${Math.round(finishTime / 60000)}:${
-    Math.round(finishTime / 1000) % 60
-  }   ${lost ? 'X' : results.length}/${MAX_CHALLENGES}${isHardMode ? '*' : ''}
+#${day}${time}  ${lost ? 'X' : results.length}/${MAX_CHALLENGES}${
+    isHardMode ? '*' : ''
+  }
 ${generateEmojiGrid(results, getEmojiTiles(isDarkMode, isHighContrastMode))}`;
 
   const shareData = { text: textToShare };

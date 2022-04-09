@@ -21,17 +21,19 @@ export type WebAppEventContext = WebviewEventContext<
 
 export type AppEventContext = ChatEventContext | WebAppEventContext;
 
-export type GameHistory = {
+export type GameStats = {
   totalWinTime: number;
   winCounts: number[];
   failCount: number;
+  currentStreak: number;
+  bestStreak: number;
 };
 
 export type GameState = {
   start?: number;
   end?: number;
   guesses: string[];
-  history: GameHistory;
+  stats: GameStats;
 };
 
 export type GameData = {
@@ -40,5 +42,5 @@ export type GameData = {
   answer?: string;
   results: CharStatus[][];
   guesses: string[];
-  history: GameHistory;
+  stats: GameStats;
 };

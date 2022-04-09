@@ -1,4 +1,4 @@
-import { GameStats } from '../../utils/stats';
+import { GameStats } from '../../../src/types';
 import { Progress } from './Progress';
 
 type Props = {
@@ -7,7 +7,7 @@ type Props = {
 };
 
 export const Histogram = ({ gameStats, numberOfGuessesMade }: Props) => {
-  const winDistribution = gameStats.winDistribution;
+  const winDistribution = gameStats.winCounts;
   const maxValue = Math.max(...winDistribution);
 
   return (

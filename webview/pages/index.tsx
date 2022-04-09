@@ -40,7 +40,7 @@ type PageProps = {
   client: WebviewClient<any, any>;
 };
 
-const WrodleGame = ({ data, client }: PageProps) => {
+const WordleGame = ({ data, client }: PageProps) => {
   const [isGameWon, setIsGameWon] = useState(false);
   const [isGameLost, setIsGameLost] = useState(false);
   const [isWaitingResult, setIsWaitingResult] = useState(false);
@@ -58,7 +58,7 @@ const WrodleGame = ({ data, client }: PageProps) => {
         setIsRevealing(false);
       }, REVEAL_TIME_MS * MAX_WORD_LENGTH);
     }
-    if (data?.finishTime) {
+    if (data?.finishTime !== undefined) {
       setIsGameWon(true);
     } else if (data?.guesses.length === MAX_CHALLENGES) {
       setIsGameLost(true);
@@ -258,11 +258,11 @@ const WrodleGame = ({ data, client }: PageProps) => {
         />
         <StatsModal
           day={data?.day || 0}
-          finishTime={data?.finishTime || 0}
+          finishTime={data?.finishTime}
           isOpen={isStatsModalOpen}
           handleClose={() => setIsStatsModalOpen(false)}
           results={results}
-          history={data?.history || null}
+          gameStats={data?.stats}
           isGameLost={isGameLost}
           isGameWon={isGameWon}
           handleShareToClipboard={() => showSuccessAlert(GAME_COPIED_MESSAGE)}
@@ -287,4 +287,4 @@ const WrodleGame = ({ data, client }: PageProps) => {
   );
 };
 
-export default WrodleGame;
+export default WordleGame;
