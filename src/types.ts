@@ -1,10 +1,10 @@
-import type { MessengerEventContext } from '@machinat/messenger';
+import type { MessengerEventContext, MessengerChat } from '@machinat/messenger';
 import type MessengerAuth from '@machinat/messenger/webview';
-import type { TwitterEventContext } from '@machinat/twitter';
+import type { TwitterEventContext, TwitterChat } from '@machinat/twitter';
 import type TwitterAuth from '@machinat/twitter/webview';
-import type { TelegramEventContext } from '@machinat/telegram';
+import type { TelegramEventContext, TelegramChat } from '@machinat/telegram';
 import type TelegramAuth from '@machinat/telegram/webview';
-import type { LineEventContext } from '@machinat/line';
+import type { LineEventContext, LineChat } from '@machinat/line';
 import type LineAuth from '@machinat/line/webview';
 import type { WebviewEventContext } from '@machinat/webview';
 import { CharStatus } from './constants';
@@ -19,7 +19,22 @@ export type WebAppEventContext = WebviewEventContext<
   MessengerAuth | TwitterAuth | TelegramAuth | LineAuth
 >;
 
-export type AppEventContext = ChatEventContext | WebAppEventContext;
+export type GameChannel =NonNullable<ChatEventContext['event']['channel']>
+
+export type NotifyEventContext = {
+  platform: ChatEventContext['platform']
+  event: {
+    platform: ChatEventContext['platform']
+    category: 'app',
+    type: 'notify',
+    payload: null,
+    channel: GameChannel,
+    user: null
+  }
+}
+
+export type AppEventContext = ChatEventContext | WebAppEventContext | NotifyEventContext;
+
 
 export type GameStats = {
   totalWinTime: number;
@@ -30,16 +45,22 @@ export type GameStats = {
 };
 
 export type GameState = {
-  start?: number;
-  end?: number;
-  guesses: string[];
+  game: {
+    start?: number;
+    end?: number;
+    guesses: string[];
+  };
   stats: GameStats;
+  settings: {
+    timezone: number;
+    notifHour?: number;
+  };
 };
 
 export type GameData = {
   day: number;
   finishTime?: number;
-  answer?: string;
+  answer: string;
   results: CharStatus[][];
   guesses: string[];
   stats: GameStats;

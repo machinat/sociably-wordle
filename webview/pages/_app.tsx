@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import App from 'next/app';
 import Head from 'next/head';
 import getConfig from 'next/config';
@@ -42,6 +42,14 @@ const WordleApp = ({ Component, pageProps }) => {
     },
     null
   );
+
+  useEffect(() => {
+    client.send({
+      category: 'app',
+      type: 'start',
+      payload: { timezone: -(new Date().getTimezoneOffset() / 60) },
+    });
+  }, [client]);
 
   return (
     <React.StrictMode>

@@ -1,29 +1,46 @@
 import Machinat, { makeContainer, BasicBot } from '@machinat/core';
 import useWordleState from '../services/useWordleState';
+import useWordleGame from '../services/useWordleGame';
+import Timer from '../services/Timer';
 import GameSummary from '../components/GameSummary';
-import { getGuessStatuses, getDayIndex } from '../utils';
+import { getGuessStatuses, getDayIndex, getWordOfDay } from '../utils';
 import { WebAppEventContext, GameData } from '../types';
 import { MAX_CHALLENGES } from '../constants';
 
-const handleWebview = makeContainer({ deps: [useWordleState, BasicBot] })(
-  (wordleGame, basicBot) => async (ctx: WebAppEventContext) => {
+const handleWebview = makeContainer({
+  deps: [useWordleGame, useWordleState, BasicBot, Timer],
+})(
+  (playGame, updateState, basicBot, timer) => async (ctx: WebAppEventContext) => {
     const {
       event,
       bot,
       metadata: { auth },
     } = ctx;
 
-    if (event.type === 'connect') {
-      const [answer, { start, end, guesses, stats }] = await wordleGame(
-        auth.channel
-      );
+    if (event.type === 'start') {
+      const chat = auth.channel;
+      const timezoneInput = event.payload.timezone;
+      const {
+        state: { game, stats, settings },
+        isTimezoneChanged,
+      } = await updateState(chat, true, timezoneInput);
 
+      if (typeof settings.notifHour === 'number' && isTimezoneChanged) {
+        const registeredTime = await timer.getRegisteredTimer(chat);
+        if (registeredTime) {
+          await timer.registerTimer(chat, timezoneInput, settings.notifHour);
+        }
+      }
+
+      const day = getDayIndex(settings.timezone, game.start || Date.now());
+      const answer = getWordOfDay(day);
       const gameData: GameData = {
-        day: getDayIndex(start || Date.now()),
-        finishTime: start && end ? end - start : undefined,
-        results: guesses.map((guess) => getGuessStatuses(guess, answer)),
-        guesses,
+        day,
+        finishTime: game.start && game.end ? game.end - game.start : undefined,
+        results: game.guesses.map((guess) => getGuessStatuses(guess, answer)),
+        guesses: game.guesses,
         stats,
+        answer,
       };
 
       await bot.send(event.channel, {
@@ -33,21 +50,21 @@ const handleWebview = makeContainer({ deps: [useWordleState, BasicBot] })(
       });
     } else if (event.type === 'guess') {
       const { day, guess } = event.payload;
-      const [answer, { start, end, guesses, stats }] = await wordleGame(
-        auth.channel,
-        day,
-        guess
-      );
+      const {
+        answer,
+        state: { game, stats },
+      } = await playGame(auth.channel, day, guess);
 
-      const isFinished = end || guesses.length === MAX_CHALLENGES;
-      const finishTime = start && end ? end - start : undefined;
+      const isFinished = game.end || game.guesses.length === MAX_CHALLENGES;
+      const finishTime =
+        game.start && game.end ? game.end - game.start : undefined;
       const gameData: GameData = {
         day,
-        guesses,
+        guesses: game.guesses,
         stats,
         finishTime,
-        results: guesses.map((guess) => getGuessStatuses(guess, answer)),
-        answer: isFinished ? answer : undefined,
+        results: game.guesses.map((guess) => getGuessStatuses(guess, answer)),
+        answer,
       };
 
       await bot.send(event.channel, {
@@ -57,12 +74,15 @@ const handleWebview = makeContainer({ deps: [useWordleState, BasicBot] })(
       });
 
       if (isFinished) {
+        const notifyTimer = await timer.getRegisteredTimer(auth.channel);
         await basicBot.render(
           auth.channel,
           <GameSummary
+            day={day}
             answer={answer}
             finishTime={finishTime}
-            guesses={guesses}
+            guesses={game.guesses}
+            withNotifyButton={!notifyTimer}
           />
         );
       }

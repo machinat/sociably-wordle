@@ -1,21 +1,20 @@
 import Machinat from '@machinat/core';
 import { AGNET_TAG_NAME, MAX_CHALLENGES, CharStatus } from '../constants';
-import { getDayIndex, getGuessStatuses, formatTime } from '../utils';
+import { getGuessStatuses, formatTime } from '../utils';
 
-type ShareGameProps = {
-  noDescription?: boolean;
+type ShareGameTextProps = {
+  day: number;
   answer: string;
   finishTime: undefined | number;
   guesses: string[];
 };
 
-const ShareGame = ({
+const ShareGameText = ({
+  day,
   answer,
   finishTime,
   guesses,
-  noDescription,
-}: ShareGameProps) => {
-  const day = getDayIndex(Date.now());
+}: ShareGameTextProps) => {
   const time =
     typeof finishTime !== 'undefined' ? `  ${formatTime(finishTime!)}` : '';
   const guessTiles = guesses
@@ -33,20 +32,17 @@ const ShareGame = ({
     })
     .join('\n');
   return (
-    <>
-      {noDescription || <p>Share today's record 👇</p>}
-      <p>
-        @{AGNET_TAG_NAME}
-        <br />#{day}
-        {time}
-        {'  '}
-        {typeof finishTime !== 'undefined' ? guesses.length : 'X'}/
-        {MAX_CHALLENGES}
-        <br />
-        {guessTiles}
-      </p>
-    </>
+    <p>
+      @{AGNET_TAG_NAME}
+      <br />#{day}
+      {time}
+      {'  '}
+      {typeof finishTime !== 'undefined' ? guesses.length : 'X'}/
+      {MAX_CHALLENGES}
+      <br />
+      {guessTiles}
+    </p>
   );
 };
 
-export default ShareGame;
+export default ShareGameText;

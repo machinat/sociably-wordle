@@ -1,16 +1,10 @@
 {
-  "include": [
-    "./src/**/*"
-  ],
+  "include": ["./src/**/*"],
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./lib",
-    "lib": [
-      "es2018"
-    ],
-    "types": [
-      "node"
-    ],
+    "lib": ["es2018"],
+    "types": ["node"],
     "module": "commonjs",
     "target": "es2018",
     "jsx": "react",

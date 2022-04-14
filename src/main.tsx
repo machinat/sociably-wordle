@@ -5,6 +5,9 @@ import { filter } from '@machinat/stream/operators';
 import Script from '@machinat/script';
 import handleChat from './handlers/handleChat';
 import handleWebview from './handlers/handleWebview';
+import handleNotify from './handlers/handleNotify';
+import useWordleState from './services/useWordleState';
+import Timer from './services/Timer';
 import { AppEventContext, ChatEventContext } from './types';
 
 const main = (event$: Stream<AppEventContext>): void => {
@@ -16,14 +19,34 @@ const main = (event$: Stream<AppEventContext>): void => {
         ctx.event.category === 'message' || ctx.event.category === 'postback'
     ),
     filter(
-      makeContainer({ deps: [Script.Processor] })(
-        (processor) => async (ctx: ChatEventContext) => {
-          if (!ctx.event.channel) {
+      makeContainer({ deps: [Script.Processor, useWordleState, Timer] })(
+        (processor, updateState, timer) => async (ctx: ChatEventContext) => {
+          const { channel } = ctx.event;
+          if (!channel) {
             return true;
           }
-          const runtime = await processor.continue(ctx.event.channel, ctx);
+          const runtime = await processor.continue(channel, ctx);
           if (runtime) {
             await ctx.reply(runtime.output());
+
+            const updatedNotifHour = runtime.returnValue?.notifHour;
+            if (typeof updatedNotifHour === 'number') {
+              const {
+                state: { settings },
+              } = await updateState(channel, false, undefined, (state) => ({
+                ...state,
+                settings: {
+                  ...state.settings,
+                  notifHour: updatedNotifHour,
+                },
+              }));
+
+              await timer.registerTimer(
+                channel,
+                settings.timezone,
+                updatedNotifHour
+              );
+            }
           }
           return !runtime;
         }
@@ -48,6 +71,12 @@ const main = (event$: Stream<AppEventContext>): void => {
     .pipe(filter((ctx) => ctx.event.platform === 'webview'))
     .subscribe(handleWebview)
     .catch(console.error);
+    
+    // handle notify
+    event$
+      .pipe(filter((ctx) => ctx.event.type === 'notify'))
+      .subscribe(handleNotify)
+      .catch(console.error);
 };
 
 export default main;

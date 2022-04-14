@@ -95,5 +95,44 @@ export default {
         ],
       },
     },
+
+    notify: {
+      trainingPhrases: {
+        en: [
+          'notify',
+          'notify me',
+          'notify me new game',
+          'call me tomorrow',
+          'subscribe',
+          'subscribe new game',
+          'let me know when there is a new game',
+        ],
+      },
+    },
+
+    cancel_notify: {
+      trainingPhrases: {
+        en: [
+          'no notify',
+          "don't notify",
+          'stop notifying me',
+          'cancel notification',
+          'no subscribe',
+          'cancel subscription',
+        ],
+      },
+    },
+
+    update_notify_time: {
+      trainingPhrases: {
+        en: [
+          'change time',
+          'change notify time',
+          'update time',
+          'set notify time',
+          'update alert time',
+        ],
+      },
+    },
   },
 };

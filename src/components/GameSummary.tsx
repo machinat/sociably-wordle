@@ -1,24 +1,29 @@
 import Machinat from '@machinat/core';
 import { MAX_CHALLENGES } from '../constants';
-import ShareGame from './ShareGame';
+import ShareGameText from './ShareGameText';
 import WithMenu from './WithMenu';
 
 type GameSummaryProps = {
+  day: number;
   answer: string;
   finishTime: undefined | number;
   guesses: string[];
+  withNotifyButton?: boolean;
 };
 
 function random<T>(choices: T[]): T {
   return choices[Math.floor(Math.random() * choices.length)];
 }
 
-const GameSummary = ({ answer, finishTime, guesses }: GameSummaryProps) => {
+const GameSummary = (
+  { day, answer, finishTime, guesses, withNotifyButton }: GameSummaryProps,
+  { platform }
+) => {
   const isWinned = typeof finishTime !== 'undefined';
   const words = !isWinned
     ? `Oops! The answer is ${answer.toUpperCase()}`
     : guesses.length === 1
-    ? random(['WOOOW!', 'How you do that!', 'Unbelievable!'])
+    ? random(['Wooow!', 'How you do that!', 'Unbelievable!'])
     : guesses.length <= 3
     ? random(["That's amazing!", 'Excellent!', 'Awesome!'])
     : guesses.length < MAX_CHALLENGES
@@ -33,13 +38,18 @@ const GameSummary = ({ answer, finishTime, guesses }: GameSummaryProps) => {
         {words}
         {isWinned ? ' ' + random(['🎉', '🎊']) : ''}
       </p>
-      <ShareGame
-        noDescription
+      <ShareGameText
+        day={day}
         answer={answer}
         finishTime={finishTime}
         guesses={guesses}
       />
-      <WithMenu gameFinished>See you tomorrow</WithMenu>
+      <WithMenu
+        isGameFinished
+        withNotifyButton={withNotifyButton || platform === 'messenger'}
+      >
+        See you tomorrow!
+      </WithMenu>
     </>
   );
 };
