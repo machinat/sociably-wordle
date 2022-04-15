@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { default as GraphemeSplitter } from 'grapheme-splitter';
-import { CharStatus } from './constants';
+import { CharStatus, EPOCH_DATE } from './constants';
 
 export const unicodeSplit = (word: string) => {
   return new GraphemeSplitter().splitGraphemes(word);
@@ -14,11 +14,9 @@ export const getWordList = () => {
   return _wordlist;
 };
 
-export const getEpochTime = () => Date.UTC(2022, 0);
-
 export const getDayIndex = (timezone: number, time: number) => {
   // January 1, 2022 Game Epoch
-  const epochMs = getEpochTime();
+  const epochMs = EPOCH_DATE.getTime();
   const msInDay = 86400000;
   const index = Math.floor((time - epochMs + timezone * 3600000) / msInDay);
   return index;

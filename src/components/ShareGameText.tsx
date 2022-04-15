@@ -1,5 +1,5 @@
 import Machinat from '@machinat/core';
-import { AGNET_TAG_NAME, MAX_CHALLENGES, CharStatus } from '../constants';
+import { AGENT_TAG_NAME, MAX_CHALLENGES, CharStatus } from '../constants';
 import { getGuessStatuses, formatTime } from '../utils';
 
 type ShareGameTextProps = {
@@ -33,7 +33,7 @@ const ShareGameText = ({
     .join('\n');
   return (
     <p>
-      @{AGNET_TAG_NAME}
+      @{AGENT_TAG_NAME}
       <br />#{day}
       {time}
       {'  '}

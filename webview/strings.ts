@@ -1,5 +1,9 @@
-export const GAME_TITLE = process.env.NEXT_PUBLIC_APP_NAME!;
-export const AGNET_TAG_NAME = process.env.NEXT_PUBLIC_AGNET_TAG_NAME!;
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
+
+export const APP_NAME = publicRuntimeConfig.APP_NAME as string;
+export const AGENT_TAG_NAME = publicRuntimeConfig.AGENT_TAG_NAME as string;
 
 export const WIN_MESSAGES = ['Great Job!', 'Awesome', 'Well done!'];
 export const GAME_COPIED_MESSAGE = 'Game copied to clipboard';

@@ -13,10 +13,10 @@ import '../index.css';
 
 const {
   publicRuntimeConfig: {
-    messengerPageId,
-    twitterAgentId,
-    telegramBotName,
-    lineLiffId,
+    MESSENGER_PAGE_ID,
+    TWITTER_AGENT_ID,
+    TELEGRAM_BOT_NAME,
+    LINE_LIFF_ID,
   },
 } = getConfig();
 
@@ -24,10 +24,10 @@ const WordleApp = ({ Component, pageProps }) => {
   const client = useClient({
     mockupMode: typeof window === 'undefined',
     authPlatforms: [
-      new MessengerWebviewAuth({ pageId: messengerPageId }),
-      new TwitterWebviewAuth({ agentId: twitterAgentId }),
-      new TelegramWebviewAuth({ botName: telegramBotName }),
-      new LineWebviewAuth({ liffId: lineLiffId }),
+      new MessengerWebviewAuth({ pageId: MESSENGER_PAGE_ID }),
+      new TwitterWebviewAuth({ agentId: TWITTER_AGENT_ID }),
+      new TelegramWebviewAuth({ botName: TELEGRAM_BOT_NAME }),
+      new LineWebviewAuth({ liffId: LINE_LIFF_ID }),
     ],
   });
 

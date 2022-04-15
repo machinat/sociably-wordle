@@ -19,6 +19,7 @@ import useIntent from './services/useIntent';
 import useUserProfile from './services/useUserProfile';
 import useWordleGame from './services/useWordleGame';
 import useWordleState from './services/useWordleState';
+import useGlobalStatistics from './services/useGlobalStatistics';
 import Timer from './services/Timer';
 import recognitionData from './recognitionData';
 import * as scenes from './scenes';
@@ -158,6 +159,7 @@ const createApp = (options?: CreateAppOptions) => {
       useUserProfile,
       useWordleGame,
       useWordleState,
+      useGlobalStatistics,
       Timer,
       TwitterAssetManager,
     ],

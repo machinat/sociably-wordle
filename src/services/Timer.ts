@@ -2,13 +2,12 @@ import {
   makeClassProvider,
   StateController,
   BasicBot,
+  MachinatChannel,
 } from '@machinat/core';
 import Script from '@machinat/script';
-import{ GameChannel} from '../types'
 
 type TimingData = {
-  channel: GameChannel;
-  tag?: string;
+  channel: MachinatChannel;
 };
 
 type IndexData = {
@@ -25,9 +24,6 @@ const getTimeFrame = (tz: number, hour: number) =>
   Math.floor((((hour - tz + 24) % 24) * 3600000) / TIME_FRAME);
 
 const getFrameId = (i: number) => `timer:${i}`;
-
-const getRegisterKey = (channel: GameChannel, tag?: string) =>
-  tag ? `${channel.uid}-${tag}` : channel.uid;
 
 const INDEX_KEY = 'timer:index';
 
@@ -57,25 +53,23 @@ export class Timer {
   }
 
   async getRegisteredTimer(
-    channel: GameChannel,
-    tag?: string
+    channel: MachinatChannel
   ): Promise<null | { timezone: number; hour: number }> {
     const index = await this.stateController
       .globalState(INDEX_KEY)
-      .get<IndexData>(getRegisterKey(channel, tag));
+      .get<IndexData>(channel.uid);
 
     return index ? { timezone: index.tz, hour: index.hr } : null;
   }
 
   async registerTimer(
-    channel: GameChannel,
+    channel: MachinatChannel,
     timezone: number,
-    hour: number,
-    tag?: string
+    hour: number
   ): Promise<boolean> {
     const frame = getTimeFrame(timezone, hour);
     const frameId = getFrameId(frame);
-    const key = getRegisterKey(channel, tag);
+    const key = channel.uid;
     let originalIdx: undefined | IndexData;
 
     await this.stateController
@@ -96,21 +90,20 @@ export class Timer {
 
     await this.stateController.globalState(frameId).set<TimingData>(key, {
       channel,
-      tag,
     });
 
     return !!originalIdx;
   }
 
-  async cancelTimer(channel: GameChannel, tag?: string): Promise<boolean> {
-    const key = getRegisterKey(channel, tag);
-    let index
-    
+  async cancelTimer(channel: MachinatChannel): Promise<boolean> {
+    const key = channel.uid;
+    let index;
+
     await this.stateController
       .globalState(INDEX_KEY)
-      .update<IndexData>(key,existedIdx => {
-        index = existedIdx
-        return undefined
+      .update<IndexData>(key, (existedIdx) => {
+        index = existedIdx;
+        return undefined;
       });
     if (!index) {
       return false;
@@ -119,7 +112,7 @@ export class Timer {
     const frame = getTimeFrame(index.tz, index.hr);
     const isDeleted = await this.stateController
       .globalState(getFrameId(frame))
-      .delete(getRegisterKey(channel, tag));
+      .delete(key);
 
     return isDeleted;
   }
@@ -129,7 +122,11 @@ export class Timer {
   }
 
   private async _handleTimesUp() {
-    const frameToExec = getTimeFrame(0, (Date.now()%86400000)/3600000);
+    const now = new Date();
+    const timeAtToday =
+      now.getTime() -
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+    const frameToExec = getTimeFrame(0, timeAtToday / 3600000);
     if (
       frameToExec !== 0
         ? this._currentFrame >= frameToExec
@@ -152,7 +149,6 @@ export class Timer {
     for (const listener of this._listeners) {
       listener(targets);
     }
-
   }
 }
 

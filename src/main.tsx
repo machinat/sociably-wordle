@@ -6,6 +6,7 @@ import Script from '@machinat/script';
 import handleChat from './handlers/handleChat';
 import handleWebview from './handlers/handleWebview';
 import handleNotify from './handlers/handleNotify';
+import handleSocialPost from './handlers/handleSocialPost';
 import useWordleState from './services/useWordleState';
 import Timer from './services/Timer';
 import { AppEventContext, ChatEventContext } from './types';
@@ -71,12 +72,18 @@ const main = (event$: Stream<AppEventContext>): void => {
     .pipe(filter((ctx) => ctx.event.platform === 'webview'))
     .subscribe(handleWebview)
     .catch(console.error);
-    
-    // handle notify
-    event$
-      .pipe(filter((ctx) => ctx.event.type === 'notify'))
-      .subscribe(handleNotify)
-      .catch(console.error);
+
+  // handle notify
+  event$
+    .pipe(filter((ctx) => ctx.event.type === 'notify'))
+    .subscribe(handleNotify)
+    .catch(console.error);
+
+  // handle notify
+  event$
+    .pipe(filter((ctx) => ctx.event.type === 'social_post'))
+    .subscribe(handleSocialPost)
+    .catch(console.error);
 };
 
 export default main;

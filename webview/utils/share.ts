@@ -1,6 +1,6 @@
 import { CharStatus } from '../../src/constants';
 import { MAX_CHALLENGES } from '../settings';
-import { AGNET_TAG_NAME } from '../strings';
+import { AGENT_TAG_NAME } from '../strings';
 import { UAParser } from 'ua-parser-js';
 
 const webShareApiDeviceTypes: string[] = ['mobile', 'smarttv', 'wearable'];
@@ -23,7 +23,7 @@ export const shareStatus = (
         Math.round(finishTime / 1000) % 60
       }`
     : '';
-  const textToShare = `@${AGNET_TAG_NAME}
+  const textToShare = `@${AGENT_TAG_NAME}
 #${day}${time}  ${lost ? 'X' : results.length}/${MAX_CHALLENGES}${
     isHardMode ? '*' : ''
   }

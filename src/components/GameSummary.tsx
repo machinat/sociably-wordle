@@ -25,7 +25,7 @@ const GameSummary = (
     : guesses.length === 1
     ? random(['Wooow!', 'How you do that!', 'Unbelievable!'])
     : guesses.length <= 3
-    ? random(["That's amazing!", 'Excellent!', 'Awesome!'])
+    ? random(['Terrific!', 'Amazing!', 'Awesome!'])
     : guesses.length < MAX_CHALLENGES
     ? random(['Good job!', 'Well done!', 'Nice!'])
     : guesses.length === MAX_CHALLENGES

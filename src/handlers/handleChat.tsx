@@ -34,21 +34,17 @@ const handleChat = makeContainer({
         return reply(<About.Start />);
       }
 
-      if (intent.type === 'share') {
+      if (intent.type === 'share' && isFinishedToday) {
         return reply(
-          isFinishedToday ? (
-            <>
-              <p>Your game record today 👇</p>
-              <ShareGameText
-                day={day}
-                answer={getWordOfDay(day)}
-                guesses={game.guesses}
-                finishTime={game.end && game.start && game.end - game.start}
-              />
-            </>
-          ) : (
-            <WithMenu>You haven't finished today's game!</WithMenu>
-          )
+          <>
+            <p>Game record today 👇</p>
+            <ShareGameText
+              day={day}
+              answer={getWordOfDay(day)}
+              guesses={game.guesses}
+              finishTime={game.end && game.start && game.end - game.start}
+            />
+          </>
         );
       }
 

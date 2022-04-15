@@ -73,11 +73,11 @@ export default {
       trainingPhrases: {
         en: [
           'share',
-          'game play',
-          'share record',
           'share game',
-          'my game today',
+          'my game',
+          'share game',
           'share game play',
+          'share today',
         ],
       },
     },
@@ -90,7 +90,7 @@ export default {
           'history',
           'records',
           'my records',
-          'data',
+          'game data',
           'past statistics',
         ],
       },

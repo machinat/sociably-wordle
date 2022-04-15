@@ -6,9 +6,14 @@ type StatCardProps = {
   gameStats: GameStats;
 };
 
-const getShareBlocks = (count: number, total: number) => {
-  const ratio = total !== 0 ? count / total : 0;
-  return new Array(Math.floor(ratio / 0.125)).fill('█').join('');
+const getRatioBar = (count: number, maxCount: number, total: number) => {
+  if (!count || !total) {
+    return '';
+  }
+  return (
+    new Array(Math.round((count / maxCount) * 6)).fill('🟩').join('') +
+    ` ${count}`
+  );
 };
 
 const StatCard = ({ gameStats }: StatCardProps) => {
@@ -18,6 +23,7 @@ const StatCard = ({ gameStats }: StatCardProps) => {
   const winnedGames = winCounts.reduce((sum, c) => sum + c, 0);
   const totalGames = winnedGames + failCount;
   const avgTime = winnedGames !== 0 ? totalWinTime / winnedGames : 0;
+  const maxCount = Math.max(...winCounts, failCount);
 
   return (
     <>
@@ -38,10 +44,11 @@ const StatCard = ({ gameStats }: StatCardProps) => {
       <p>
         {winCounts.map((count, i) => (
           <>
-            {i + 1} {getShareBlocks(count, winnedGames)} {count || null}
+            {i + 1}: {getRatioBar(count, maxCount, winnedGames)}
             <br />
           </>
         ))}
+        X: {getRatioBar(failCount, maxCount, winnedGames)}
       </p>
     </>
   );

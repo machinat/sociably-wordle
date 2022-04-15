@@ -1,5 +1,8 @@
+import { EPOCH_DATE } from '../settings';
+
 export const getDayBegin = (day: number) => {
-  const epochMs = Date.UTC(2022, 0);
-  const msInDay = 86400000;
-  return new Date(epochMs + msInDay * day);
+  const utcTomorrow = new Date(EPOCH_DATE).setUTCDate(
+    EPOCH_DATE.getUTCDate() + day
+  );
+  return new Date(utcTomorrow + new Date().getTimezoneOffset() * 60000);
 };

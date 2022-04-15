@@ -29,6 +29,11 @@ export default makeFactoryProvider({
           const lastGameDay = game.start
             ? getDayIndex(timezone, game.start)
             : undefined;
+
+          if (day !== lastGameDay && day !== today) {
+            return currentState;
+          }
+
           const isNewGame = lastGameDay !== today && day === today;
           const start = isNewGame ? now : game.start || now;
           const guesses = isNewGame ? [] : game.guesses;
