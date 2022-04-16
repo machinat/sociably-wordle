@@ -3,23 +3,18 @@ import * as Messenger from '@machinat/messenger/components';
 import * as Twitter from '@machinat/twitter/components';
 import * as Telegram from '@machinat/telegram/components';
 import * as Line from '@machinat/line/components';
+import { formatHour } from '../utils';
 
 type ConfirmNotifyProps = {
   notifHour: undefined | number;
 };
-
-const format2Digits = (n: number) => (n < 10 ? `0${n}` : n);
 
 const ConfirmNotify = ({ notifHour }: ConfirmNotifyProps, { platform }) => {
   let isSubscribe: boolean;
   let message: string;
 
   if ((isSubscribe = typeof notifHour === 'number')) {
-    const hr = Math.floor(notifHour % 24);
-    const min = Math.floor((notifHour * 60) % 60);
-    message = `I'll notify you at ${format2Digits(hr)}:${format2Digits(
-      min
-    )} 👍`;
+    message = `I'll notify you at ${formatHour(notifHour)} 👍`;
   } else {
     message = 'Ok, comback anytime!';
   }

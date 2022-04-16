@@ -70,6 +70,8 @@ export type GameState = {
     timezone: number;
     notifHour?: number;
   };
+  interactAt: number;
+  messengerOneTimeNotifToken?: string;
 };
 
 export type GameData = {

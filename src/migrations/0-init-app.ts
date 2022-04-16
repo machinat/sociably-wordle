@@ -39,6 +39,12 @@ export const up = makeContainer({
       whitelisted_domains: [ENTRY_URL],
     });
 
+    const messengerWebhookFields = [
+      'messages',
+      'messaging_postbacks',
+      'messaging_optins',
+    ];
+
     // create Messenger webhook subscription, require running server in advance
     await messengerBot.makeApiCall(
       'POST',
@@ -47,7 +53,7 @@ export const up = makeContainer({
         access_token: `${MESSENGER_APP_ID}|${MESSENGER_APP_SECRET}`,
         object: 'page',
         callback_url: `${ENTRY_URL}/webhook/messenger`,
-        fields: ['messages', 'messaging_postbacks'],
+        fields: messengerWebhookFields,
         include_values: true,
         verify_token: MESSENGER_VERIFY_TOKEN,
       }
@@ -55,7 +61,7 @@ export const up = makeContainer({
 
     // add page to Messenger webhook
     await messengerBot.makeApiCall('POST', 'me/subscribed_apps', {
-      subscribed_fields: ['messages', 'messaging_postbacks'],
+      subscribed_fields: messengerWebhookFields,
     });
 
     // register webhook on Twitter

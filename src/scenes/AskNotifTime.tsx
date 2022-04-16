@@ -3,21 +3,36 @@ import { build } from '@machinat/script';
 import * as $ from '@machinat/script/keywords';
 import ConfirmNotify from '../components/ConfirmNotify';
 import WithYesNoReplies from '../components/WithYesNoReplies';
+import RequestMessenger24HrNotif from '../components/RequestMessenger24HrNotif';
 import useIntent from '../services/useIntent';
+import { getLocalHour } from '../utils';
 import { AppEventContext } from '../types';
 
 type AskNotifParams = {
   currentNotifHour: undefined | number;
+  timezone: number;
+  hasMessengerOneTimeToken: boolean;
 };
 type AskNotifVars = {
   currentNotifHour: undefined | number;
   isBeginning: boolean;
   isOk: boolean;
   notifHour: undefined | number;
+  timezone: number;
+  hasMessengerOneTimeToken: boolean;
 };
 type AskNotifReturn = {
   notifHour: undefined | number;
 };
+
+const shouldRequestMessengerOneTimeToken = (
+  platform: string,
+  vars: AskNotifVars
+): vars is AskNotifVars & { notifHour: number } =>
+  platform === 'messenger' &&
+  !vars.hasMessengerOneTimeToken &&
+  typeof vars.notifHour === 'number' &&
+  vars.notifHour > getLocalHour(vars.timezone, Date.now());
 
 export default build<
   AskNotifVars,
@@ -27,11 +42,17 @@ export default build<
 >(
   {
     name: 'AskNotif',
-    initVars: ({ currentNotifHour }) => ({
+    initVars: ({
+      currentNotifHour,
+      timezone,
+      hasMessengerOneTimeToken = false,
+    }) => ({
       currentNotifHour,
       isBeginning: true,
       isOk: true,
       notifHour: undefined,
+      timezone,
+      hasMessengerOneTimeToken,
     }),
   },
   <$.BLOCK<AskNotifVars>>
@@ -81,14 +102,22 @@ export default build<
       />
     </$.WHILE>
 
-    {({ vars }) => (
-      <ConfirmNotify
-        notifHour={vars.isOk ? vars.notifHour : vars.currentNotifHour}
-      />
-    )}
+    {({ platform, vars }) =>
+      shouldRequestMessengerOneTimeToken(platform, vars) ? (
+        <RequestMessenger24HrNotif notifHour={vars.notifHour} />
+      ) : (
+        <ConfirmNotify
+          notifHour={vars.isOk ? vars.notifHour : vars.currentNotifHour}
+        />
+      )
+    }
 
     <$.RETURN<AskNotifVars, AskNotifReturn>
-      value={({ vars }) => ({ notifHour: vars.notifHour })}
+      value={({ platform, vars }) => ({
+        notifHour: shouldRequestMessengerOneTimeToken(platform, vars)
+          ? undefined
+          : vars.notifHour,
+      })}
     />
   </$.BLOCK>
 );

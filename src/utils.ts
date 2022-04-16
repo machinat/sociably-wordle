@@ -75,10 +75,21 @@ export const getGuessStatuses = (
   return statuses;
 };
 
+const format2Digits = (n: number) => (n < 10 ? `0${n}` : n);
+
 export const formatTime = (time: number) => {
   if (time === 0) {
     return '0:00';
   }
   const sec = Math.round(time / 1000) % 60;
-  return `${Math.round(time / 60000)}:${sec < 10 ? `0${sec}` : sec}`;
+  return `${Math.round(time / 60000)}:${format2Digits(sec)}`;
 };
+
+export const formatHour = (hour: number) => {
+  const hr = Math.floor(hour % 24);
+  const min = Math.floor((hour * 60) % 60);
+  return `${format2Digits(hr)}:${format2Digits(min)}`;
+};
+
+export const getLocalHour = (timezone: number, time: number) =>
+  ((time % 86400000) / 3600000 + timezone + 24) % 24;

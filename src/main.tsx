@@ -34,13 +34,17 @@ const main = (event$: Stream<AppEventContext>): void => {
             if (typeof updatedNotifHour === 'number') {
               const {
                 state: { settings },
-              } = await updateState(channel, false, undefined, (state) => ({
-                ...state,
-                settings: {
-                  ...state.settings,
-                  notifHour: updatedNotifHour,
-                },
-              }));
+              } = await updateState(
+                channel,
+                { updateInteractTime: true },
+                (state) => ({
+                  ...state,
+                  settings: {
+                    ...state.settings,
+                    notifHour: updatedNotifHour,
+                  },
+                })
+              );
 
               await timer.registerTimer(
                 channel,

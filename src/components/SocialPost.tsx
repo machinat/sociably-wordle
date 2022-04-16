@@ -16,39 +16,13 @@ type SocialPostProps = {
   totalWinTime: number;
 };
 
-const SPECIAL_BOLD_CHARS = {
-  a: '𝗔',
-  b: '𝗕',
-  c: '𝗖',
-  d: '𝗗',
-  e: '𝗘',
-  f: '𝗙',
-  g: '𝗚',
-  h: '𝗛',
-  i: '𝗜',
-  j: '𝗝',
-  k: '𝗞',
-  l: '𝗟',
-  m: '𝗠',
-  n: '𝗡',
-  o: '𝗢',
-  p: '𝗣',
-  q: '𝗤',
-  r: '𝗥',
-  s: '𝗦',
-  t: '𝗧',
-  u: '𝗨',
-  v: '𝗩',
-  w: '𝗪',
-  x: '𝗫',
-  y: '𝗬',
-  z: '𝗭',
-};
+const SPECIAL_CHAR_SET = 0x1f170;
 
-const getSpecialBoldWord = (word: string) => {
+const getSpecialWord = (word: string) => {
   let boldWord = '';
   for (const char of word.toLowerCase()) {
-    boldWord += SPECIAL_BOLD_CHARS[char];
+    const charNum = char.charCodeAt(0) - 97; // 'a'
+    boldWord += String.fromCodePoint(SPECIAL_CHAR_SET + charNum);
   }
   return boldWord;
 };
@@ -72,7 +46,7 @@ const SocialPost = (
       The word of {date.getMonth() + 1}/{date.getDate()} is:
       <br />
       <br />
-      {getSpecialBoldWord(answer)}
+      {getSpecialWord(answer)}
       <br />
     </>
   );

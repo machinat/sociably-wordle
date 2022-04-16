@@ -9,12 +9,17 @@ import { GameState } from '../types';
 
 const WORDLE_STATE_KEY = 'game_data';
 
+type UpdateOptions = {
+  updateDay?: boolean;
+  updateTimezone?: number;
+  updateInteractTime?: boolean;
+};
+
 const useWordleState =
   (stateController: StateController) =>
   async (
     channel: MachinatChannel,
-    updateDay: boolean,
-    updateTimezone?: number,
+    { updateDay, updateTimezone, updateInteractTime }: UpdateOptions = {},
     updator: (state: GameState) => GameState = (x) => x
   ): Promise<{
     state: GameState;
@@ -41,9 +46,12 @@ const useWordleState =
             settings: {
               timezone: 0,
             },
+            interactAt: Date.now(),
           }
         ): GameState => {
-          let state = currentState;
+          let state = updateInteractTime
+            ? { ...currentState, interactAt: Date.now() }
+            : currentState;
 
           if (
             typeof updateTimezone === 'number' &&

@@ -18,8 +18,7 @@ export default makeFactoryProvider({
 
       const { state } = await updateWordleState(
         channel,
-        false,
-        undefined,
+        {},
         (currentState): GameState => {
           const {
             game,

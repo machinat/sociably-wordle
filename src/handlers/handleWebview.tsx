@@ -25,7 +25,10 @@ const handleWebview = makeContainer({
         const {
           state: { game, stats, settings },
           isTimezoneChanged,
-        } = await updateState(chat, true, timezoneInput);
+        } = await updateState(chat, {
+          updateDay: true,
+          updateTimezone: timezoneInput,
+        });
 
         if (typeof settings.notifHour === 'number' && isTimezoneChanged) {
           const registeredTime = await timer.getRegisteredTimer(chat);
