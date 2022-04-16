@@ -1,5 +1,6 @@
 import Machinat, { makeContainer } from '@machinat/core';
 import { AnswerCallbackQuery } from '@machinat/telegram/components';
+import { Like } from '@machinat/twitter/components';
 import { Stream } from '@machinat/stream';
 import { filter } from '@machinat/stream/operators';
 import Script from '@machinat/script';
@@ -87,6 +88,20 @@ const main = (event$: Stream<AppEventContext>): void => {
   event$
     .pipe(filter((ctx) => ctx.event.type === 'social_post'))
     .subscribe(handleSocialPost)
+    .catch(console.error);
+
+  // like tweet when being mentioned
+  event$
+    .pipe(
+      filter(
+        (ctx) => ctx.platform === 'twitter' && ctx.event.type === 'mention'
+      )
+    )
+    .subscribe(
+      async (ctx: ChatEventContext & { event: { type: 'mention' } }) => {
+        await ctx.reply(<Like tweetId={ctx.event.tweet.id} />);
+      }
+    )
     .catch(console.error);
 };
 
