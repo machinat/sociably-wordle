@@ -58,6 +58,6 @@ app
     main(event$);
 
     timer.start();
-    return timer.registerTimer(SOCIAL_POST_CHANNEL, 0, 12);
+    return timer.registerTimer(SOCIAL_POST_CHANNEL, 0, 14);
   })
   .catch(console.error);
