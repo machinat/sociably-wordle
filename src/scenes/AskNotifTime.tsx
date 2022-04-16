@@ -1,12 +1,13 @@
 import Machinat, { makeContainer } from '@machinat/core';
 import { build } from '@machinat/script';
 import * as $ from '@machinat/script/keywords';
+import { parseTimeOfDay } from '@diatche/parse-time';
 import ConfirmNotify from '../components/ConfirmNotify';
 import WithYesNoReplies from '../components/WithYesNoReplies';
 import RequestMessenger24HrNotif from '../components/RequestMessenger24HrNotif';
 import useIntent from '../services/useIntent';
 import { getLocalHour } from '../utils';
-import { AppEventContext } from '../types';
+import { ChatEventContext } from '../types';
 
 type AskNotifParams = {
   currentNotifHour: undefined | number;
@@ -36,7 +37,7 @@ const shouldRequestMessengerOneTimeToken = (
 
 export default build<
   AskNotifVars,
-  AppEventContext,
+  ChatEventContext,
   AskNotifParams,
   AskNotifReturn
 >(
@@ -62,39 +63,32 @@ export default build<
       {({ vars: { isBeginning } }) => (
         <WithYesNoReplies noOnly noText="Cancel">
           {isBeginning ? (
-            <p>
-              What time do you like to play?
-              <br />
-              (gimme a 0-24 number)
-            </p>
+            <p>What time do you like to play?</p>
           ) : (
-            <p>please give me a 0-24 number</p>
+            <p>That's not a valid time</p>
           )}
         </WithYesNoReplies>
       )}
 
-      <$.PROMPT<AskNotifVars>
+      <$.PROMPT<AskNotifVars, ChatEventContext>
         key="ask-time"
         set={makeContainer({ deps: [useIntent] })(
           (getIntent) =>
             async ({ vars }, { event }) => {
-              const hr = Number(event.text);
-              if (Number.isNaN(hr)) {
-                const intent = await getIntent(event);
-                return {
-                  ...vars,
-                  isOk: intent.type !== 'no',
-                  isBeginning: false,
-                };
-              }
+              const timeResult =
+                'text' in event && event.text
+                  ? parseTimeOfDay(event.text)
+                  : undefined;
+              const notifHour = timeResult
+                ? timeResult.totalMs / 3600000
+                : undefined;
 
-              if (hr < 0 || hr > 24) {
-                return { ...vars, isBeginning: false };
-              }
+              const intent = timeResult ? null : await getIntent(event);
 
               return {
                 ...vars,
-                notifHour: hr === 24 ? 0 : hr,
+                isOk: intent?.type !== 'no',
+                notifHour,
                 isBeginning: false,
               };
             }
