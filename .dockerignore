@@ -1,0 +1,7 @@
+node_modules
+.*
+Dockerfile
+src
+webview
+!webview/next.config.js
+!webview/public
