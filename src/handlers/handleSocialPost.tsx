@@ -3,6 +3,7 @@ import Twitter from '@machinat/twitter';
 import Telegram from '@machinat/telegram';
 import SocialPost from '../components/SocialPost';
 import useGlobalStatistics from '../services/useGlobalStatistics';
+import { AGENT_TAG_NAME } from '../constants';
 import { getWordOfDay, getDayIndex } from '../utils';
 
 const handleWebview = makeContainer({
@@ -27,7 +28,7 @@ const handleWebview = makeContainer({
   );
 
   await twitterBot.renderTweet(null, socialPost);
-  // await telegramBot.render(`@${}`, socialPost);
+  await telegramBot.render(`@${AGENT_TAG_NAME}`, socialPost);
 });
 
 export default handleWebview;

@@ -108,6 +108,36 @@ const SocialPost = (
     );
   }
 
+  if (platform === 'telegram') {
+    return (
+      <>
+        <p>
+          {answerDesc}
+          <br />
+          {statistics}
+        </p>
+        <p>
+          Guess Distribution:
+          <br />
+          <br />
+          {gussesDistribution}
+        </p>
+        <Telegram.Text
+          replyMarkup={
+            <Telegram.InlineKeyboard>
+              <Telegram.UrlButton
+                text="Play Wordle 🔤"
+                url={`https://t.me/${TELEGRAM_BOT_NAME}`}
+              />
+            </Telegram.InlineKeyboard>
+          }
+        >
+          Play today's game here 👇
+        </Telegram.Text>
+      </>
+    );
+  }
+
   return (
     <p>
       {answerDesc}
