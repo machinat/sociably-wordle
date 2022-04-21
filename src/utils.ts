@@ -1,17 +1,14 @@
 import { readFileSync } from 'fs';
 import { default as GraphemeSplitter } from 'grapheme-splitter';
-import { CharStatus, EPOCH_DATE } from './constants';
+import { CharStatus, EPOCH_DATE, WORDLIST_DATA_PATH } from './constants';
 
 export const unicodeSplit = (word: string) => {
   return new GraphemeSplitter().splitGraphemes(word);
 };
 
-let _wordlist;
+let wordlist = JSON.parse(readFileSync(WORDLIST_DATA_PATH, 'utf8'));
 export const getWordList = () => {
-  if (!_wordlist) {
-    _wordlist = JSON.parse(readFileSync('./.wordlist.json', 'utf8'));
-  }
-  return _wordlist;
+  return wordlist;
 };
 
 export const getDayIndex = (timezone: number, time: number) => {

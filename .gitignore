@@ -3,7 +3,7 @@ lib
 dist
 
 # Local Storage
-.wordlist.json
+.wordlist-data.json
 .state_data.json
 .executed_migrations.json
 

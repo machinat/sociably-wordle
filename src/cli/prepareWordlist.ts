@@ -1,4 +1,5 @@
 import { writeFileSync, readFileSync } from 'fs';
+import { WORDLIST_DATA_PATH } from '../constants';
 
 const wordlist = JSON.parse(readFileSync('./wordlist.json', 'utf8'));
 
@@ -11,4 +12,4 @@ while (restWordList.length > 0) {
   listWithRandomOrder.push(word);
 }
 
-writeFileSync('./.wordlist.json', JSON.stringify(listWithRandomOrder));
+writeFileSync(WORDLIST_DATA_PATH, JSON.stringify(listWithRandomOrder));
