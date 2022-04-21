@@ -58,7 +58,7 @@ const handleWebview = makeContainer({
         const { day, guess } = event.payload;
         const {
           answer,
-          state: { game, stats },
+          state: { game, stats, settings },
         } = await playGame(auth.channel, day, guess);
 
         const isFinished = game.end || game.guesses.length === MAX_CHALLENGES;
@@ -81,7 +81,7 @@ const handleWebview = makeContainer({
 
         if (isFinished) {
           await updateGlobalStatistics(
-            new Date(game.start || Date.now()),
+            getDayIndex(settings.timezone, game.start || Date.now()),
             typeof finishTime === 'undefined'
               ? { isWinned: false }
               : {

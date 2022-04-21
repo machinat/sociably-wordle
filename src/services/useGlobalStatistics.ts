@@ -1,5 +1,5 @@
 import { makeFactoryProvider, StateController } from '@machinat/core';
-import { MAX_CHALLENGES } from '../constants';
+import { MAX_CHALLENGES, EPOCH_DATE } from '../constants';
 
 const GLOBAL_STATS_KEY = 'global_stats';
 
@@ -25,8 +25,8 @@ const DEFAULT_STATS: GlobalStats = {
 
 const useGlobalStatistics =
   (stateController: StateController) =>
-  async (date: Date, result?: ResultInput): Promise<GlobalStats> => {
-    const absoulteDay = Math.round(date.getTime() / 86400000);
+  async (day: number, result?: ResultInput): Promise<GlobalStats> => {
+    const absoulteDay = Math.floor(EPOCH_DATE.getTime() / 86400000 + day);
 
     const updatedStats = await stateController
       .globalState(GLOBAL_STATS_KEY)

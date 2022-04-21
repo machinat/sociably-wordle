@@ -43,7 +43,7 @@ const SocialPost = (
 ) => {
   const answerDesc = (
     <>
-      The word of {date.getMonth() + 1}/{date.getDate()} is:
+      The word of {date.getUTCMonth() + 1}/{date.getUTCDate()} is:
       <br />
       <br />
       {getSpecialWord(answer)}

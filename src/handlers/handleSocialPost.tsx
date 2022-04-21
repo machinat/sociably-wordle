@@ -8,12 +8,12 @@ import { getWordOfDay, getDayIndex } from '../utils';
 const handleWebview = makeContainer({
   deps: [useGlobalStatistics, Twitter.Bot, Telegram.Bot],
 })((getGlobalStatistics, twitterBot, telegramBot) => async () => {
-  const yesterdayTime = Date.now() - 86400000;
-  const wordOfYesterday = getWordOfDay(getDayIndex(0, yesterdayTime));
+  const yesterday = new Date(Date.now() - 86400000);
+  const yesterdayIdx = getDayIndex(0, yesterday.getTime());
+  const wordOfYesterday = getWordOfDay(yesterdayIdx);
 
-  const yesterday = new Date(yesterdayTime);
   const { failCount, winCounts, totalWinTime } = await getGlobalStatistics(
-    yesterday
+    yesterdayIdx
   );
 
   const socialPost = (
