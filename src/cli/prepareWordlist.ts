@@ -13,3 +13,5 @@ while (restWordList.length > 0) {
 }
 
 writeFileSync(WORDLIST_DATA_PATH, JSON.stringify(listWithRandomOrder));
+
+console.log(`[app] word list is created at ${WORDLIST_DATA_PATH}`);
