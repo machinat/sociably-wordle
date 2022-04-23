@@ -16,7 +16,7 @@ type SocialPostProps = {
   totalWinTime: number;
 };
 
-const SPECIAL_CHAR_SET = 0x1f170;
+const SPECIAL_CHAR_SET = 0x1d5d4;
 
 const getSpecialWord = (word: string) => {
   let boldWord = '';
