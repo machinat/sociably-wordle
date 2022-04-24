@@ -27,14 +27,38 @@ const getSpecialWord = (word: string) => {
   return boldWord;
 };
 
-const getRatioBar = (count: number, maxCount: number, total: number) => {
+const getRatioBar = (
+  count: number,
+  maxCount: number,
+  total: number,
+  maxLength: number
+) => {
   if (!count || !total) {
     return ' 0%';
   }
-  const len = Math.round((count / maxCount) * 8);
+  const len = Math.round((count / maxCount) * maxLength);
   return `${new Array(len).fill('🟩').join('')} ${Math.round(
     (count / total) * 100
   )}%`;
+};
+
+const getGuessesDistributionChart = (
+  winCounts: number[],
+  failCount: number,
+  totalGames: number,
+  maxBarLength: number
+) => {
+  const maxCount = Math.max(...winCounts, failCount);
+  const winningRows = winCounts
+    .map(
+      (count, i) =>
+        `${i + 1}: ${getRatioBar(count, maxCount, totalGames, maxBarLength)}\n`
+    )
+    .join('');
+  return (
+    winningRows +
+    `X: ${getRatioBar(failCount, maxCount, totalGames, maxBarLength)}\n`
+  );
 };
 
 const SocialPost = (
@@ -70,14 +94,6 @@ const SocialPost = (
       ⏲ Avg. Win Time: {formatTime(avgTime)}<br />
     </>;
 
-  const maxCount = Math.max(...winCounts, failCount);
-  const gussesDistribution =
-    winCounts
-      .map((count, i) => {
-        return `${i + 1}: ${getRatioBar(count, maxCount, totalGames)}\n`;
-      })
-      .join('') + `X: ${getRatioBar(failCount, maxCount, totalGames)}\n`;
-
   if (platform === 'twitter') {
     return (
       <>
@@ -92,7 +108,7 @@ const SocialPost = (
           Guess Distribution:
           <br />
           <br />
-          {gussesDistribution}
+          {getGuessesDistributionChart(winCounts, failCount, totalGames, 8)}
         </p>
         <p>
           You can also find me at:
@@ -120,7 +136,7 @@ const SocialPost = (
           Guess Distribution:
           <br />
           <br />
-          {gussesDistribution}
+          {getGuessesDistributionChart(winCounts, failCount, totalGames, 7)}
         </p>
         <Telegram.Text
           replyMarkup={
