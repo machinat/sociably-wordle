@@ -2,11 +2,7 @@ import Machinat from '@machinat/core';
 import * as Twitter from '@machinat/twitter/components';
 import * as Telegram from '@machinat/telegram/components';
 import { formatTime } from '../utils';
-import {
-  MESSENGER_PAGE_ID,
-  TELEGRAM_BOT_NAME,
-  LINE_ACCOUNT_ID,
-} from '../constants';
+import { TELEGRAM_BOT_NAME } from '../constants';
 
 type SocialPostProps = {
   answer: string;
@@ -91,13 +87,13 @@ const SocialPost = (
       🏁 Played games: {totalGames}<br />
       🏅 Win Rate: {Math.round(winRate * 100)}%<br />
       🔠 Avg. Guesses: {avgGuesses.toFixed(1)}<br />
-      ⏲ Avg. Win Time: {formatTime(avgTime)}<br />
+      ⏰ Avg. Win Time: {formatTime(avgTime)}<br />
     </>;
 
   if (platform === 'twitter') {
     return (
       <>
-        <Twitter.Tweet directMessageLink={{ text: 'Play' }}>
+        <Twitter.Tweet directMessageLink>
           {answerDesc}
           <br />
           {statistics}
@@ -109,16 +105,6 @@ const SocialPost = (
           <br />
           <br />
           {getGuessesDistributionChart(winCounts, failCount, totalGames, 8)}
-        </p>
-        <p>
-          You can also find me at:
-          <br />
-          <br />
-          💬 Messenger https://m.me/{MESSENGER_PAGE_ID}
-          <br />
-          💬 Telegram https://t.me/{TELEGRAM_BOT_NAME}
-          <br />
-          💬 LINE https://line.me/R/ti/p/{LINE_ACCOUNT_ID}
         </p>
       </>
     );

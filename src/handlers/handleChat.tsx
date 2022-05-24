@@ -137,7 +137,7 @@ const handleChat = makeContainer({
           : '';
       return reply(
         isFinishedToday ? (
-          <WithMenu isGameFinished withShareButton>
+          <WithMenu isGameFinished withStatsButton withShareButton>
             {greeting}You've finished today's game!
           </WithMenu>
         ) : (

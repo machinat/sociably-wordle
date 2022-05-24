@@ -11,6 +11,7 @@ import { WebviewAction as LineWebviewAction } from '@machinat/line/webview';
 type WithMenuProps = {
   children: MachinatNode;
   isGameFinished?: boolean;
+  withStatsButton?: boolean;
   withShareButton?: boolean;
   withNotifyButton?: boolean;
 };
@@ -19,6 +20,7 @@ const WithMenu = (
   {
     children,
     isGameFinished,
+    withStatsButton,
     withShareButton,
     withNotifyButton,
   }: WithMenuProps,
@@ -43,7 +45,9 @@ const WithMenu = (
                 payload={notifyData}
               />
             )}
-            <Messenger.PostbackButton title={statsText} payload={statsData} />
+            {withStatsButton && (
+              <Messenger.PostbackButton title={statsText} payload={statsData} />
+            )}
             {withShareButton && (
               <Messenger.PostbackButton title={shareText} payload={shareData} />
             )}
@@ -65,7 +69,9 @@ const WithMenu = (
             {withNotifyButton && (
               <Twitter.QuickReply label={notifyText} metadata={notifyData} />
             )}
-            <Twitter.QuickReply label={statsText} metadata={statsData} />
+            {withStatsButton && (
+              <Twitter.QuickReply label={statsText} metadata={statsData} />
+            )}
             {withShareButton && (
               <Twitter.QuickReply label={shareText} metadata={shareData} />
             )}
@@ -85,7 +91,9 @@ const WithMenu = (
             {withNotifyButton && (
               <Telegram.CallbackButton text={notifyText} data={notifyData} />
             )}
-            <Telegram.CallbackButton text={statsText} data={statsData} />
+            {withStatsButton && (
+              <Telegram.CallbackButton text={statsText} data={statsData} />
+            )}
             {withShareButton && (
               <Telegram.CallbackButton text={shareText} data={shareData} />
             )}
@@ -111,11 +119,13 @@ const WithMenu = (
                 data={notifyData}
               />
             )}
-            <Line.PostbackAction
-              label={statsText}
-              displayText={statsText}
-              data={statsData}
-            />
+            {withStatsButton && (
+              <Line.PostbackAction
+                label={statsText}
+                displayText={statsText}
+                data={statsData}
+              />
+            )}
             {withShareButton && (
               <Line.PostbackAction
                 label={shareText}

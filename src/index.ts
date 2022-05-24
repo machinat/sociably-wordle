@@ -3,7 +3,7 @@ import { fromApp, Stream } from '@machinat/stream';
 import Timer from './services/Timer';
 import main from './main';
 import createApp from './app';
-import { SOCIAL_POST_CHANNEL } from './constants';
+import { SOCIAL_POST_CHANNEL, SOCIAL_POST_UTC_HOUR } from './constants';
 import { AppEventContext, GameChannel } from './types';
 
 const app = createApp();
@@ -58,6 +58,6 @@ app
     main(event$);
 
     timer.start();
-    return timer.registerTimer(SOCIAL_POST_CHANNEL, 0, 14);
+    return timer.registerTimer(SOCIAL_POST_CHANNEL, 0, SOCIAL_POST_UTC_HOUR);
   })
   .catch(console.error);

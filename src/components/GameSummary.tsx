@@ -46,6 +46,7 @@ const GameSummary = (
       />
       <WithMenu
         isGameFinished
+        withStatsButton
         withNotifyButton={withNotifyButton || platform === 'messenger'}
       >
         See you tomorrow!

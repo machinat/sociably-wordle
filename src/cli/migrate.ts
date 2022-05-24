@@ -15,11 +15,11 @@ const umzug = new Umzug({
   migrations: {
     glob: resolvePath(
       __dirname,
-      `../migrations/*.${__dirname.includes('/src/') ? 'ts' : 'js'}`
+      `../migrations/*.${__dirname.includes('/src/') ? 'ts?(x)' : 'js'}`
     ),
     resolve: ({ name, path }) => {
       return {
-        name: name.replace(/.[t|j]s$/, ''),
+        name: name.replace(/.[t|j]sx?$/, ''),
         up: async () => {
           const { up } = await import(path as string);
           if (up) {
