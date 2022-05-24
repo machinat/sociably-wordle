@@ -32,7 +32,7 @@ const StatCard = ({ gameStats }: StatCardProps) => {
         🏆 Wins {winnedGames}
         <br />
         💪 Win Rate {totalGames && ((winnedGames / totalGames) * 100).toFixed()}
-        %<br />⏲ Avg. Time {formatTime(avgTime)}
+        %<br />⏰ Avg. Time {formatTime(avgTime)}
         <br />
         🔥 Streak {currentStreak}
         <br />
