@@ -1,5 +1,5 @@
-import Machinat from '@machinat/core';
-import * as Messenger from '@machinat/messenger/components';
+import Sociably from '@sociably/core';
+import * as Messenger from '@sociably/messenger/components';
 import { formatHour } from '../utils';
 
 type RequestMessenger24HrNotifProps = {

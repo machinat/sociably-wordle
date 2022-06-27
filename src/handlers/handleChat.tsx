@@ -1,4 +1,4 @@
-import Machinat, { makeContainer } from '@machinat/core';
+import Sociably, { makeContainer } from '@sociably/core';
 import About from '../scenes/About';
 import AskNotifTime from '../scenes/AskNotifTime';
 import WithMenu from '../components/WithMenu';

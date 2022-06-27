@@ -1,9 +1,9 @@
-import { makeContainer } from '@machinat/core';
-import Messenger from '@machinat/messenger';
-import Twitter from '@machinat/twitter';
-import TwitterAssetManager from '@machinat/twitter/asset';
-import Telegram from '@machinat/telegram';
-import Line from '@machinat/line';
+import { makeContainer } from '@sociably/core';
+import Messenger from '@sociably/messenger';
+import Twitter from '@sociably/twitter';
+import TwitterAssetManager from '@sociably/twitter/asset';
+import Telegram from '@sociably/telegram';
+import Line from '@sociably/line';
 
 const {
   DOMAIN,

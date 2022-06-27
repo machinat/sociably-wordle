@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { resolve as resolvePath } from 'path';
-import DialogFlow from '@machinat/dialogflow';
+import DialogFlow from '@sociably/dialogflow';
 import { Umzug, JSONStorage } from 'umzug';
 import { program } from 'commander';
 import createApp from '../app';

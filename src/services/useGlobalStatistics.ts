@@ -1,4 +1,4 @@
-import { makeFactoryProvider, StateController } from '@machinat/core';
+import { makeFactoryProvider, StateController } from '@sociably/core';
 import { MAX_CHALLENGES, EPOCH_DATE } from '../constants';
 
 const GLOBAL_STATS_KEY = 'global_stats';

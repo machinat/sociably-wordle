@@ -1,6 +1,6 @@
-import Machinat from '@machinat/core';
-import * as Twitter from '@machinat/twitter/components';
-import * as Telegram from '@machinat/telegram/components';
+import Sociably from '@sociably/core';
+import * as Twitter from '@sociably/twitter/components';
+import * as Telegram from '@sociably/telegram/components';
 import { formatTime } from '../utils';
 import { TELEGRAM_BOT_NAME } from '../constants';
 

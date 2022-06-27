@@ -1,8 +1,8 @@
 import {
   makeFactoryProvider,
   StateController,
-  MachinatChannel,
-} from '@machinat/core';
+  SociablyChannel,
+} from '@sociably/core';
 import { getDayIndex } from '../utils';
 import { MAX_CHALLENGES } from '../constants';
 import { GameState } from '../types';
@@ -18,7 +18,7 @@ type UpdateOptions = {
 const useWordleState =
   (stateController: StateController) =>
   async (
-    channel: MachinatChannel,
+    channel: SociablyChannel,
     { updateDay, updateTimezone, updateInteractTime }: UpdateOptions = {},
     updator: (state: GameState) => GameState = (x) => x
   ): Promise<{

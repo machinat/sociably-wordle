@@ -1,6 +1,6 @@
-import Machinat, { makeContainer } from '@machinat/core';
-import Twitter from '@machinat/twitter';
-import Telegram from '@machinat/telegram';
+import Sociably, { makeContainer } from '@sociably/core';
+import Twitter from '@sociably/twitter';
+import Telegram from '@sociably/telegram';
 import SocialPost from '../components/SocialPost';
 import useGlobalStatistics from '../services/useGlobalStatistics';
 import { AGENT_TAG_NAME } from '../constants';

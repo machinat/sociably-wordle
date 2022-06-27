@@ -1,4 +1,4 @@
-import { makeFactoryProvider, MachinatChannel } from '@machinat/core';
+import { makeFactoryProvider, SociablyChannel } from '@sociably/core';
 import { getWordOfDay, getDayIndex } from '../utils';
 import { MAX_CHALLENGES } from '../constants';
 import { GameState } from '../types';
@@ -9,7 +9,7 @@ export default makeFactoryProvider({
 })(
   (updateWordleState) =>
     async (
-      channel: MachinatChannel,
+      channel: SociablyChannel,
       day: number,
       guess: string
     ): Promise<{ answer: string; state: GameState }> => {

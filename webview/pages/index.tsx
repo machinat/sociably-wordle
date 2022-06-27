@@ -1,6 +1,6 @@
 import React from 'react';
 import { default as GraphemeSplitter } from 'grapheme-splitter';
-import WebviewClient from '@machinat/webview/client';
+import WebviewClient from '@sociably/webview/client';
 import { useState, useEffect } from 'react';
 import { Grid } from '../components/grid/Grid';
 import { Keyboard } from '../components/keyboard/Keyboard';

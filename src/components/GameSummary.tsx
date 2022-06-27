@@ -1,4 +1,4 @@
-import Machinat from '@machinat/core';
+import Sociably from '@sociably/core';
 import { MAX_CHALLENGES } from '../constants';
 import ShareGameText from './ShareGameText';
 import WithMenu from './WithMenu';

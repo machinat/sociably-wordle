@@ -1,5 +1,5 @@
-import Machinat, { makeContainer, BasicBot } from '@machinat/core';
-import Messenger from '@machinat/messenger';
+import Sociably, { makeContainer, BasicBot } from '@sociably/core';
+import Messenger from '@sociably/messenger';
 import useWordleState from '../services/useWordleState';
 import Timer from '../services/Timer';
 import WithMenu from '../components/WithMenu';

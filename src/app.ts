@@ -1,19 +1,19 @@
-import Machinat from '@machinat/core';
-import Http from '@machinat/http';
-import Messenger from '@machinat/messenger';
-import MessengerAuth from '@machinat/messenger/webview';
-import Line from '@machinat/line';
-import LineAuth from '@machinat/line/webview';
-import Twitter from '@machinat/twitter';
-import TwitterAssetManager from '@machinat/twitter/asset';
-import TwitterAuth from '@machinat/twitter/webview';
-import Telegram from '@machinat/telegram';
-import TelegramAuth from '@machinat/telegram/webview';
-import Webview from '@machinat/webview';
-import Script from '@machinat/script';
-import RedisState from '@machinat/redis-state';
-import { FileState } from '@machinat/dev-tools';
-import Dialogflow from '@machinat/dialogflow';
+import Sociably from '@sociably/core';
+import Http from '@sociably/http';
+import Messenger from '@sociably/messenger';
+import MessengerAuth from '@sociably/messenger/webview';
+import Line from '@sociably/line';
+import LineAuth from '@sociably/line/webview';
+import Twitter from '@sociably/twitter';
+import TwitterAssetManager from '@sociably/twitter/asset';
+import TwitterAuth from '@sociably/twitter/webview';
+import Telegram from '@sociably/telegram';
+import TelegramAuth from '@sociably/telegram/webview';
+import Webview from '@sociably/webview';
+import Script from '@sociably/script';
+import RedisState from '@sociably/redis-state';
+import { FileState } from '@sociably/dev-tools';
+import Dialogflow from '@sociably/dialogflow';
 import nextConfigs from '../webview/next.config.js';
 import useIntent from './services/useIntent';
 import useUserProfile from './services/useUserProfile';
@@ -67,7 +67,7 @@ type CreateAppOptions = {
 };
 
 const createApp = (options?: CreateAppOptions) => {
-  return Machinat.createApp({
+  return Sociably.createApp({
     modules: [
       Http.initModule({
         noServer: options?.noServer,
@@ -88,7 +88,7 @@ const createApp = (options?: CreateAppOptions) => {
 
       Dialogflow.initModule({
         recognitionData,
-        environment: `wordle-machina-${DEV ? 'dev' : 'prod'}`,
+        environment: `sociably-wordle-${DEV ? 'dev' : 'prod'}`,
         projectId: DIALOGFLOW_PROJECT_ID,
       }),
 
@@ -148,7 +148,7 @@ const createApp = (options?: CreateAppOptions) => {
           basicAuth: {
             mode: 'loose',
             appName: APP_NAME,
-            appIconUrl: 'https://machinat.com/img/logo.jpg',
+            appIconUrl: 'https://raw.githubusercontent.com/machinat/sociably-wordle/main/media/icon.png',
           },
         }
       ),

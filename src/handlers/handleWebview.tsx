@@ -1,4 +1,4 @@
-import Machinat, { makeContainer, BasicBot } from '@machinat/core';
+import Sociably, { makeContainer, BasicBot } from '@sociably/core';
 import useWordleState from '../services/useWordleState';
 import useWordleGame from '../services/useWordleGame';
 import useGlobalStatistics from '../services/useGlobalStatistics';

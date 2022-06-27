@@ -1,9 +1,9 @@
-import Machinat, { makeContainer } from '@machinat/core';
-import { AnswerCallbackQuery } from '@machinat/telegram/components';
-import { Like } from '@machinat/twitter/components';
-import { Stream } from '@machinat/stream';
-import { filter } from '@machinat/stream/operators';
-import Script from '@machinat/script';
+import Sociably, { makeContainer } from '@sociably/core';
+import { AnswerCallbackQuery } from '@sociably/telegram/components';
+import { Like } from '@sociably/twitter/components';
+import { Stream } from '@sociably/stream';
+import { filter } from '@sociably/stream/operators';
+import Script from '@sociably/script';
 import handleChat from './handlers/handleChat';
 import handleWebview from './handlers/handleWebview';
 import handleNotify from './handlers/handleNotify';

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import Twitter from '@machinat/twitter';
-import TwitterAssetManager from '@machinat/twitter/asset';
+import Twitter from '@sociably/twitter';
+import TwitterAssetManager from '@sociably/twitter/asset';
 import createApp from '../app';
 
 const { TWITTER_WEBHOOK_ENV } = process.env;

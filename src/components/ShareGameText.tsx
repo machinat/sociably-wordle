@@ -1,5 +1,5 @@
-import Machinat from '@machinat/core';
-import * as Twitter from '@machinat/twitter/components';
+import Sociably from '@sociably/core';
+import * as Twitter from '@sociably/twitter/components';
 import { AGENT_TAG_NAME, MAX_CHALLENGES, CharStatus } from '../constants';
 import { getGuessStatuses, formatTime } from '../utils';
 

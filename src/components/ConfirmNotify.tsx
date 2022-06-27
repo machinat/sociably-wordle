@@ -1,8 +1,8 @@
-import Machinat from '@machinat/core';
-import * as Messenger from '@machinat/messenger/components';
-import * as Twitter from '@machinat/twitter/components';
-import * as Telegram from '@machinat/telegram/components';
-import * as Line from '@machinat/line/components';
+import Sociably from '@sociably/core';
+import * as Messenger from '@sociably/messenger/components';
+import * as Twitter from '@sociably/twitter/components';
+import * as Telegram from '@sociably/telegram/components';
+import * as Line from '@sociably/line/components';
 import { formatHour } from '../utils';
 
 type ConfirmNotifyProps = {

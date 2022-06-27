@@ -2,12 +2,12 @@ import {
   makeClassProvider,
   StateController,
   BasicBot,
-  MachinatChannel,
-} from '@machinat/core';
-import Script from '@machinat/script';
+  SociablyChannel,
+} from '@sociably/core';
+import Script from '@sociably/script';
 
 type TimingData = {
-  channel: MachinatChannel;
+  channel: SociablyChannel;
 };
 
 type IndexData = {
@@ -53,7 +53,7 @@ export class Timer {
   }
 
   async getRegisteredTimer(
-    channel: MachinatChannel
+    channel: SociablyChannel
   ): Promise<null | { timezone: number; hour: number }> {
     const index = await this.stateController
       .globalState(INDEX_KEY)
@@ -63,7 +63,7 @@ export class Timer {
   }
 
   async registerTimer(
-    channel: MachinatChannel,
+    channel: SociablyChannel,
     timezone: number,
     hour: number
   ): Promise<boolean> {
@@ -95,7 +95,7 @@ export class Timer {
     return !!originalIdx;
   }
 
-  async cancelTimer(channel: MachinatChannel): Promise<boolean> {
+  async cancelTimer(channel: SociablyChannel): Promise<boolean> {
     const key = channel.uid;
     let index;
 

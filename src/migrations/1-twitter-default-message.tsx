@@ -1,7 +1,7 @@
-import Machinat, { makeContainer } from '@machinat/core';
-import Twitter from '@machinat/twitter';
-import { DirectMessage, QuickReply } from '@machinat/twitter/components';
-import TwitterAssetManager from '@machinat/twitter/asset';
+import Sociably, { makeContainer } from '@sociably/core';
+import Twitter from '@sociably/twitter';
+import { DirectMessage, QuickReply } from '@sociably/twitter/components';
+import TwitterAssetManager from '@sociably/twitter/asset';
 
 export const up = makeContainer({
   deps: [Twitter.Bot, TwitterAssetManager],

@@ -1,6 +1,6 @@
-import Machinat, { makeContainer } from '@machinat/core';
-import { build } from '@machinat/script';
-import * as $ from '@machinat/script/keywords';
+import Sociably, { makeContainer } from '@sociably/core';
+import { build } from '@sociably/script';
+import * as $ from '@sociably/script/keywords';
 import WithYesNoReplies from '../components/WithYesNoReplies';
 import useIntent from '../services/useIntent';
 
@@ -17,7 +17,7 @@ export default build<AboutVars>(
     {() => (
       <>
         <p>I'm a cloned Wordle bot</p>
-        <Machinat.Pause time={1000} />
+        <Sociably.Pause time={1000} />
         <WithYesNoReplies>Do you need more info?</WithYesNoReplies>
       </>
     )}
@@ -38,17 +38,17 @@ export default build<AboutVars>(
         <p>
           Thanks! You can also find me here:{'\n\n'}
           GitHub 😸{'\n'}
-          https://github.com/machinat/wordle-machina{'\n\n'}
+          https://github.com/machinat/sociably-wordle{'\n\n'}
           Twitter 🐦{'\n'}
-          https://twitter.com/machinatjs
+          https://twitter.com/SociablyWordle
         </p>
       ) : (
         <p>
           Please help us to do better:{'\n\n'}
           Discussions 💬{'\n'}
-          https://github.com/machinat/wordle-machina/discussions{'\n\n'}
+          https://github.com/machinat/sociably-wordle/discussions{'\n\n'}
           Report issues/bugs 🐞{'\n'}
-          https://github.com/machinat/wordle-machina/issues/new
+          https://github.com/machinat/sociably-wordle/issues/new
         </p>
       )
     }

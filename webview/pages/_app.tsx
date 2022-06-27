@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import App from 'next/app';
 import Head from 'next/head';
 import getConfig from 'next/config';
-import { useEventReducer, useClient } from '@machinat/webview/client';
-import MessengerWebviewAuth from '@machinat/messenger/webview/client';
-import TwitterWebviewAuth from '@machinat/twitter/webview/client';
-import TelegramWebviewAuth from '@machinat/telegram/webview/client';
-import LineWebviewAuth from '@machinat/line/webview/client';
+import { useEventReducer, useClient } from '@sociably/webview/client';
+import MessengerWebviewAuth from '@sociably/messenger/webview/client';
+import TwitterWebviewAuth from '@sociably/twitter/webview/client';
+import TelegramWebviewAuth from '@sociably/telegram/webview/client';
+import LineWebviewAuth from '@sociably/line/webview/client';
 import { AlertProvider } from '../context/AlertContext';
 import type { GameData } from '../../src/types';
 import '../index.css';
@@ -54,7 +54,7 @@ const WordleApp = ({ Component, pageProps }) => {
   return (
     <React.StrictMode>
       <Head>
-        <title>Wordle Machina</title>
+        <title>Sociably Wordle</title>
       </Head>
 
       <AlertProvider>
